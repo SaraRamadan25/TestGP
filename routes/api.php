@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HeartRateController;
+use App\Http\Controllers\LocationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,3 +22,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::get('/heart-rate', [HeartRateController::class, 'getHeartRate']);
+Route::post('/positionstack-api',[LocationController::class, 'positionStack']);
+Route::post('/arcgis-api',[LocationController::class, 'arcgis']);
