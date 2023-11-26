@@ -3,6 +3,7 @@
 use App\Http\Controllers\HeartRateController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PayPalController;
+use App\Http\Controllers\QrcodeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,7 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
+Route::get('/generate-qrcode/{id}', [QrcodeController::class, 'generateQrCode'])->name('generate.qrcode');
 Route::get('/heart-rate', [HeartRateController::class, 'getHeartRate']);
 Route::post('/positionstack-api',[LocationController::class, 'positionStack']);
 Route::post('/arcgis-api',[LocationController::class, 'arcgis']);
