@@ -29,3 +29,4 @@ Route::post('/arcgis-api',[LocationController::class, 'arcgis']);
 
 Route::post('/paypal/create-payment', [PayPalController::class, 'createPayment']);
 Route::post('/paypal/execute-payment', [PayPalController::class, 'executePayment']);
+

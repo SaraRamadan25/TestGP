@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\LocationUpdated;
 use App\Traits\GeneralTrait;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -9,6 +10,7 @@ use Illuminate\Http\Request;
 class LocationController extends Controller
 {
     use GeneralTrait;
+
     public function positionStack(Request $request)
     {
         try {
@@ -26,11 +28,17 @@ class LocationController extends Controller
 
             $json = json_decode($result, true);
 
+            $country = $json['data'][0]['country'] ?? null;
+            $continent = $json['data'][0]['continent'] ?? null;
+
+            event(new LocationUpdated($request->lat, $request->long, $country, $continent));
+
             return $json;
         } catch (\Exception $e) {
             return $this->returnError(201, $e->getMessage());
         }
     }
+
 
     public function arcgis(Request $request)
     {
@@ -47,6 +55,8 @@ class LocationController extends Controller
             )->getBody();
 
             $json = json_decode($result, true);
+
+            event(new LocationUpdated($request->lat, $request->long));
 
             return $json;
         } catch (\Exception $e) {
