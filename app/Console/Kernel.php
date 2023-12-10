@@ -13,8 +13,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->job(new HeartRateGenerator)->everyFifteenSeconds();
-
+        $schedule->job(new HeartRateGenerator)->everyMinute();
     }
 
     /**

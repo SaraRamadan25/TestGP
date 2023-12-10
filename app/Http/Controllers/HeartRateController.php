@@ -22,7 +22,6 @@ class HeartRateController extends Controller
         $sensorData = Http::get($sensorUrl)->json();
 
         broadcast(new \App\Events\HeartRateUpdated($sensorData))->toOthers();
-
         return response()->json(['message' => 'Data sent to Pusher']);
     }
 }
