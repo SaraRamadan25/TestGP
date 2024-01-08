@@ -25,6 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/generate-qrcode/{id}', [QrcodeController::class, 'generateQrCode'])->name('generate.qrcode');
 Route::get('/heart-rate', [HeartRateController::class, 'getHeartRate']);
 Route::post('/positionstack-api',[LocationController::class, 'positionStack']);
+Route::get('/positionstack', [LocationController::class, 'positionStack']);
 Route::post('/arcgis-api',[LocationController::class, 'arcgis']);
 
 Route::post('/paypal/create-payment', [PayPalController::class, 'createPayment']);
