@@ -163,6 +163,7 @@ return [
         /*
          * Application Service Providers...
          */
+        Illuminate\Session\SessionServiceProvider::class,
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
         App\Providers\BroadcastServiceProvider::class,
@@ -170,6 +171,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
         Ejarnutowski\LaravelApiKey\Providers\ApiKeyServiceProvider::class,
+        Laravel\Socialite\SocialiteServiceProvider::class,
+
 
     ])->toArray(),
 
@@ -186,6 +189,8 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 
