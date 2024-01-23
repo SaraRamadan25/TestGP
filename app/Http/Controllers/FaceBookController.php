@@ -25,7 +25,6 @@ class FaceBookController extends Controller
     // Facebook callback
     public function handleFacebookCallback()
     {
-        dd('hello');
         $user = Socialite::driver('facebook')->user();
 
         $this->_registerOrLoginUser($user);
