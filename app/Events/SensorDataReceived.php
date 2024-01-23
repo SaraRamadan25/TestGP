@@ -25,16 +25,14 @@ class SensorDataReceived
         $this->heartRate = $heartRate;
         $this->spo2 = $spo2;
     }
+    public function broadcastOn(): Channel
+    {
+        return new Channel('sensor-data');
+    }
 
     /**
      * Get the channels the event should broadcast on.
      *
      * @return array<int, \Illuminate\Broadcasting\Channel>
      */
-    public function broadcastOn(): array
-    {
-        return [
-            new PrivateChannel('channel-name'),
-        ];
-    }
 }
