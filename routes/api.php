@@ -30,7 +30,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/getData', [SensorController::class, 'getData']);
 
-Route::post('/sensor-data', [SensorController::class, 'store']);
+Route::post('/sensor-data', [SensorController::class, 'sensorData']);
 
 
 Route::get('/heart-rate', [HeartRateController::class, 'getHeartRate']);
