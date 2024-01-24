@@ -10,15 +10,15 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class SensorDataReceived
+class SensorDataReceived implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public $heartRate;
-    public $spo2;
+    public int $heartRate;
+    public float $spo2;
 
     public function __construct($heartRate, $spo2)
     {
@@ -29,10 +29,8 @@ class SensorDataReceived
     {
         return new Channel('sensor-data');
     }
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
+    public function broadcastAs(): string
+    {
+        return 'sensor-data';
+    }
 }

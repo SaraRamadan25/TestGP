@@ -9,30 +9,21 @@ use Illuminate\Support\Facades\Log;
 
 class SensorController extends Controller
 {
-       public function getData(Request $request): JsonResponse
+    public function getData(Request $request)
     {
-        Log::info('Received sensor data', $request->all());
-
-        // Get the HeartRate and Spo2 query parameters
+        // Retrieve data from the request
         $heartRate = $request->query('HeartRate');
         $spo2 = $request->query('Spo2');
 
-        event(new SensorDataReceived($heartRate, $spo2));
-
-        return response()->json([
-            'HeartRate' => $heartRate,
-            'Spo2' => $spo2,
+        // Log the received data (optional)
+        Log::info('Received sensor data', [
+            'heartRate' => $heartRate,
+            'spo2' => $spo2,
         ]);
 
-    }
+        // Broadcast the received data to Pusher
+        broadcast(new SensorDataReceived($heartRate, $spo2))->toOthers();
 
-        public function storeData(Request $request)
-    {
-        $heartRate = $request->input('HeartRate');
-        $spo2 = $request->input('Spo2');
-
-        event(new SensorDataReceived($heartRate, $spo2));
-
+        // Optionally, return a response
         return response()->json(['message' => 'Data received successfully']);
-    }
-}
+    }}

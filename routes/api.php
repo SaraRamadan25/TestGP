@@ -27,9 +27,10 @@ use Laravel\Socialite\Facades\Socialite;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
 Route::get('/getData', [SensorController::class, 'getData']);
 
-Route::post('/storeData', [SensorController::class, 'storeData']);
+Route::post('/sensor-data', [SensorController::class, 'store']);
 
 
 Route::get('/heart-rate', [HeartRateController::class, 'getHeartRate']);
