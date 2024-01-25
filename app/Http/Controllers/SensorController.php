@@ -12,8 +12,8 @@ class SensorController extends Controller
     public function getData(Request $request)
     {
         // Retrieve data from the request
-        $heartRate = $request->query('HeartRate');
-        $spo2 = $request->query('Spo2');
+        $heartRate = $request->input('HeartRate');
+        $spo2 = $request->input('Spo2');
 
         // Log the received data (optional)
         Log::info('Received sensor data', [
