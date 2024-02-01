@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FaceBookController;
 use App\Http\Controllers\HealthController;
 use App\Http\Controllers\HeartRateController;
@@ -8,6 +9,8 @@ use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\QrcodeController;
 use App\Http\Controllers\SensorController;
+use App\Http\Controllers\SocialiteAuthController;
+use App\Http\Controllers\UserController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,9 +27,24 @@ use Laravel\Socialite\Facades\Socialite;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+//Protected Routes
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/user', [AuthController::class, 'getUserInfo']);
+    Route::get('/logout', [AuthController::class, 'logout']);
 });
+
+//UnProtected Routes
+
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+
+Route::post('forgot',  [AuthController::class, 'forgot'])->name('password.forgot');
+Route::post('reset', [AuthController::class, 'reset'])->name('password.reset');
+
+
+Route::apiResource('users', UserController::class)->except('index');
+
 
 Route::get('/getData', [SensorController::class, 'getData']);
 
@@ -50,41 +68,11 @@ Route::get('/share-qrcode/{receiver_user_id}', [QrcodeController::class, 'shareQ
 
 Route::post('/paypal/create-payment', [PayPalController::class, 'createPayment']);
 Route::post('/paypal/execute-payment', [PayPalController::class, 'executePayment']);
-Route::get('login/facebook', [FaceBookController::class, 'redirectToFacebook'])->name('login.facebook')->middleware('web');
-Route::get('login/facebook/callback', [FaceBookController::class, 'handleFacebookCallback'])->middleware('web');
 
 
-/*
-Route::get('/auth/redirect', function () {
-    return Socialite::driver('facebook')->stateless()->redirect();
-})->middleware('web');
 
-Route::get('/auth/callback', function () {
-    $user = Socialite::driver('facebook')->stateless()->user();
-    dd($user);
-})->middleware('web');*/
-
-Route::get('/auth/redirect', function () {
-    return Socialite::driver('github')->stateless()->redirect();
-})->middleware('web');
-
-Route::get('/auth/callback', function () {
-    $githubUser = Socialite::driver('github')->stateless()->user();
-
-    $user = User::where('email', $githubUser->email)->first();
-
-    if (!$user) {
-        $user = new User();
-        $user->name = $githubUser->name;
-        $user->email = $githubUser->email;
-        // Add any other fields you want to save
-        $user->save();
-    }
-
-    Auth::login($user);
-    return redirect()->route('home');
-
-})->middleware('web');
+Route::get('/auth/redirect/github', [SocialiteAuthController::class, 'redirectToGitHub'])->middleware('web');
+Route::get('/auth/callback/github', [SocialiteAuthController::class, 'handleGitHubCallback'])->middleware('web');
 
 
 Route::post('health',[HealthController::class,'saveHealthData']);
