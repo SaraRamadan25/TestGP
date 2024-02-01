@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -16,24 +17,21 @@ class FaceBookController extends Controller
     $this->middleware('guest')->except('logout');
 }
 
-    // Facebook login
     public function redirectToFacebook()
     {
         return Socialite::driver('facebook')->stateless()->redirect();
     }
 
-    // Facebook callback
-    public function handleFacebookCallback()
+    public function handleFacebookCallback(): RedirectResponse
     {
         $user = Socialite::driver('facebook')->user();
 
         $this->_registerOrLoginUser($user);
 
-        // Return home after login
         return redirect()->route('home');
     }
 
-    protected function _registerOrLoginUser($data)
+    protected function _registerOrLoginUser($data): void
     {
         $user = User::where('email', '=', $data->email)->first();
         if (!$user) {

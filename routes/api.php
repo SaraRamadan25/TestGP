@@ -74,5 +74,7 @@ Route::post('/paypal/execute-payment', [PayPalController::class, 'executePayment
 Route::get('/auth/redirect/github', [SocialiteAuthController::class, 'redirectToGitHub'])->middleware('web');
 Route::get('/auth/callback/github', [SocialiteAuthController::class, 'handleGitHubCallback'])->middleware('web');
 
+Route::get('login/facebook', [FaceBookController::class, 'redirectToFacebook'])->name('login.facebook')->middleware('web');
+Route::get('login/facebook/callback', [FaceBookController::class, 'handleFacebookCallback'])->middleware('web');
 
 Route::post('health',[HealthController::class,'saveHealthData']);
