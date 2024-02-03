@@ -39,11 +39,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
-
 Route::post('forgot',  [AuthController::class, 'forgot'])->name('password.forgot');
 Route::post('reset', [AuthController::class, 'reset'])->name('password.reset');
-
-
 Route::apiResource('users', UserController::class)->except('index');
 
 
@@ -53,6 +50,7 @@ Route::post('/sensor-data', [SensorController::class, 'sensorData']);
 
 
 Route::get('/heart-rate', [HeartRateController::class, 'getHeartRate']);
+
 Route::post('/positionstack-api',[LocationController::class, 'positionStack']);
 Route::get('/positionstack', [LocationController::class, 'positionStack']);
 Route::post('/arcgis-api',[LocationController::class, 'arcgis']);

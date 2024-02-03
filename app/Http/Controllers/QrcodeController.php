@@ -56,7 +56,6 @@ class QrcodeController extends Controller
         $qrCode = QrCode::where('content', $qrCodeData)->first();
 
         if ($qrCode) {
-            // Assuming you have a relationship between QrCode and Jacket named 'jacket'
             $jacket = $qrCode->jacket;
 
             if ($jacket) {
@@ -65,7 +64,6 @@ class QrcodeController extends Controller
                     'jacket' => [
                         'modelno' => $jacket->modelno,
                         'batteryLevel' => $jacket->batteryLevel,
-                        // Add more fields as needed
                     ],
                 ]);
             } else {
@@ -82,7 +80,7 @@ class QrcodeController extends Controller
 
     public function shareQRCode(): JsonResponse
     {
-        $randomContent = uniqid(); // Generate a random content for the QR code
+        $randomContent = uniqid();
 
         try {
             $qrCode = QrCode::format('png')->size(300)->generate("Random Content: $randomContent");
