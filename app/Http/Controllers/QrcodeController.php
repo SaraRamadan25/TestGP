@@ -3,25 +3,36 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class QrcodeController extends Controller
 {
-    public function generateQrCode($id)
+    public function scanqr($username): BinaryFileResponse|JsonResponse
     {
-        $outputDirectory = public_path('qrcodes');
+        $user = User::where('username', $username)->first();
 
-        // Create the directory if it doesn't exist, using correct path separator
-        if (!is_dir($outputDirectory)) {
-            mkdir($outputDirectory, 0755, true); // Ensure proper permissions
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found with the provided username.',
+            ], 404);
         }
 
-        // Generate and save the QR code with error handling
+        $outputDirectory = public_path('qrcodes');
+
+        if (!is_dir($outputDirectory)) {
+            mkdir($outputDirectory, 0755, true);
+        }
+
         try {
-            QrCode::format('png')->size(300)->generate("Hello, world! ID: $id",
-                $outputDirectory.DIRECTORY_SEPARATOR."qrcode_$id.png");
+            QrCode::format('png')->size(300)->generate("Hello, world! Username: $username",
+                $outputDirectory.DIRECTORY_SEPARATOR."qrcode_$username.png");
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -29,34 +40,62 @@ class QrcodeController extends Controller
             ], 500);
         }
 
-        // Return the generated QR code as a response
-        return response()->file($outputDirectory.DIRECTORY_SEPARATOR."qrcode_$id.png")->header('Content-Type',
-            'image/png');
+        $file = $outputDirectory.DIRECTORY_SEPARATOR."qrcode_$username.png";
+
+        return response()->download($file, "qrcode_$username.png", [
+            'Content-Type' => 'image/png',
+            'Content-Disposition' => 'inline; filename="qrcode_'.$username.'.png"',
+        ]);
     }
 
-
-    public function shareQRCode($receiver_user_id)
+    public function checkQrCodeExistence(Request $request): JsonResponse
     {
-        try {
-            // Get the current user ID
-            $sender_user_id = auth()->id();
+        dd($request->all());
+        $qrCodeData = $request->input('content');
 
-            $qrCodeContent = "Action for user $receiver_user_id initiated by user $sender_user_id";
+        $qrCode = QrCode::where('content', $qrCodeData)->first();
 
-            // Generate the QR code in SVG format
-            $qrCodeSvg = QrCode::format('svg')->size(300)->generate($qrCodeContent);
+        if ($qrCode) {
+            // Assuming you have a relationship between QrCode and Jacket named 'jacket'
+            $jacket = $qrCode->jacket;
 
+            if ($jacket) {
+                return response()->json([
+                    'exists' => true,
+                    'jacket' => [
+                        'modelno' => $jacket->modelno,
+                        'batteryLevel' => $jacket->batteryLevel,
+                        // Add more fields as needed
+                    ],
+                ]);
+            } else {
+                return response()->json([
+                    'exists' => false,
+                ]);
+            }
+        } else {
             return response()->json([
-                'success' => true,
-                'message' => 'QR Code shared successfully',
-                'qr_code_content' => $qrCodeContent,
-                'qr_code_svg' => $qrCodeSvg,
+                'exists' => false,
             ]);
+        }
+    }
+
+    public function shareQRCode(): JsonResponse
+    {
+        $randomContent = uniqid(); // Generate a random content for the QR code
+
+        try {
+            $qrCode = QrCode::format('png')->size(300)->generate("Random Content: $randomContent");
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to share QR code: '.$e->getMessage(),
+                'message' => 'Failed to generate QR code: ' . $e->getMessage(),
             ], 500);
         }
-    }
-}
+
+        return response()->json([
+            'success' => true,
+            'message' => 'QR code generated successfully',
+            'qr_code' => base64_encode($qrCode),
+        ]);
+    }}

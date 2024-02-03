@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Jacket;
+use App\Models\QrCode;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -12,7 +15,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        User::factory(4)->create();
+        QrCode::factory(4)->create();
+        Jacket::factory(4)->create();
+
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',

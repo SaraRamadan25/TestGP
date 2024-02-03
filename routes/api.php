@@ -5,6 +5,7 @@ use App\Http\Controllers\FaceBookController;
 use App\Http\Controllers\HealthController;
 use App\Http\Controllers\HeartRateController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\JacketController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\QrcodeController;
@@ -60,10 +61,10 @@ Route::post('/arcgis-api',[LocationController::class, 'arcgis']);
 
 Route::get('/',[HomeController::class,'index'])->name('home');
 // Other routes
-Route::get('/generate-qrcode/{id}', [QrcodeController::class, 'generateQrCode'])->name('generate.qrcode');
-Route::get('/share-qrcode/{receiver_user_id}', [QrcodeController::class, 'shareQRCode'])->name('share.qrcode');
+Route::get('/check/{modelno}', [JacketController::class, 'check'])->name('check');
+Route::get('/share-qrcode', [QrcodeController::class, 'shareQRCode'])->name('share.qrcode');
 
-
+Route::post('/scan-jacket', [JacketController::class, 'scanJacket'])->name('scan.jacket');
 
 
 Route::post('/paypal/create-payment', [PayPalController::class, 'createPayment']);
