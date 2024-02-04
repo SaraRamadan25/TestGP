@@ -5,20 +5,26 @@ namespace App\Http\Controllers;
 use App\Models\Health;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HealthController extends Controller
 {
-    public function saveHealthData(Request $request): JsonResponse
+    public function submitHealthData(Request $request)
     {
-        $data = $request->all();
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'age' => 'required|numeric',
+            'height' => 'required|numeric',
+            'weight' => 'required|numeric',
+            'heart_rate' => 'required|numeric',
+            'blood_type' => 'required|string',
+            'diseases' => 'nullable|string',
+            'allergies' => 'nullable|string',
+        ]);
 
-        $model = Health::create($data);
+       $validatedData['user_id'] = Auth::id();
+        Health::create($validatedData);
 
-        $response = [
-            'message' => 'Data saved successfully',
-            'id' => $model->id,
-        ];
-
-        return response()->json($response);
+        return response()->json(['message' => 'Health data successfully submitted'], 200);
     }
 }

@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Health extends Model
 {
     use HasFactory;
+
+    protected $table = 'health';
+    protected $guarded=[];
 }
