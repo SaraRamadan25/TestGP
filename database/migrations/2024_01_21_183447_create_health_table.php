@@ -18,7 +18,7 @@ return new class extends Migration
             $table->double('height');
             $table->double('weight');
             $table->double('heart_rate');
-            $table->double('blood_type');
+            $table->string('blood_type');
             $table->text('diseases');
             $table->text('allergies');
             $table->foreignId('user_id')->constrained('users');
