@@ -51,9 +51,10 @@ Route::post('/sensor-data', [SensorController::class, 'sensorData']);
 
 Route::get('/heart-rate', [HeartRateController::class, 'getHeartRate']);
 
-Route::post('/positionstack-api',[LocationController::class, 'positionStack']);
+Route::post('/positionstack-api',[LocationController::class, 'positionStack'])->name('location.api');
 Route::get('/positionstack', [LocationController::class, 'positionStack']);
-Route::post('/arcgis-api',[LocationController::class, 'arcgis']);
+
+Route::post('/arcgis-api',[LocationController::class, 'arcgis'])->name('weather.api');
 
 
 

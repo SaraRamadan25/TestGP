@@ -47,16 +47,14 @@ class PayPalController extends Controller
 
         $payment = new Payment();
         $payment->setIntent('sale')
-        ->setPayer($payer)
-        ->setTransactions([$transaction])
-        ->setRedirectUrls($redirectUrls);
+            ->setPayer($payer)
+            ->setTransactions([$transaction])
+            ->setRedirectUrls($redirectUrls);
 
         try {
             $payment->create($this->apiContext);
 
-            $paymentArray = json_decode(json_encode($payment), true);
-
-            return response()->json(['approval_url' => $payment->getApprovalLink(), 'payment' => $paymentArray]);
+            return response()->json(['approval_url' => $payment->getApprovalLink(), 'payment' => $payment]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
