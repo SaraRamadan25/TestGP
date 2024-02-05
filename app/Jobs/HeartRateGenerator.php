@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Notifications\HighHeartRateNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -9,6 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Pusher\Pusher;
 
 class HeartRateGenerator implements ShouldQueue
@@ -46,7 +48,9 @@ class HeartRateGenerator implements ShouldQueue
         // Broadcast danger message if average is over 150
         if ($averageHeartRate > 150) {
             $this->broadcastDangerMessage($averageHeartRate);
+            $this->sendDangerNotification();
         }
+
     }
 
     private function broadcastHeartRate(int $heartRate): void
@@ -75,5 +79,10 @@ class HeartRateGenerator implements ShouldQueue
 
         // Trigger the danger event on Pusher
         $pusher->trigger($channel, $eventName, $data);
+    }
+
+    private function sendDangerNotification(): void
+    {
+        Notification::route('mail', 'toka@gmail.com')->notify(new HighHeartRateNotification());
     }
 }
