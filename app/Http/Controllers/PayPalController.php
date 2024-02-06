@@ -42,7 +42,7 @@ class PayPalController extends Controller
         $transaction->setAmount($amount);
 
         $redirectUrls = new RedirectUrls();
-        $redirectUrls->setReturnUrl(url('/paypal/execute-payment')) // Set the return URL
+        $redirectUrls->setReturnUrl(route('paypal.execute')) // Set the return URL
         ->setCancelUrl(url('/'));
 
         $payment = new Payment();
@@ -54,7 +54,7 @@ class PayPalController extends Controller
         try {
             $payment->create($this->apiContext);
 
-            return response()->json(['approval_url' => $payment->getApprovalLink(), 'payment' => $payment]);
+            return response()->json(['approval_url' => $payment->getApprovalLink(), 'payment' => $payment->toArray()]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -62,8 +62,8 @@ class PayPalController extends Controller
 
     public function executePayment(Request $request): JsonResponse
     {
-        $paymentId = $request->input('paymentId');
-        $payerId = $request->input('PayerID');
+        $paymentId = $request->query('paymentId');
+        $payerId = $request->query('PayerID');
 
         $payment = Payment::get($paymentId, $this->apiContext);
 

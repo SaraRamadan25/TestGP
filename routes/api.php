@@ -7,6 +7,7 @@ use App\Http\Controllers\HeartRateController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\JacketController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\QrcodeController;
 use App\Http\Controllers\SensorController;
@@ -67,7 +68,8 @@ Route::post('/scan-jacket', [JacketController::class, 'scanJacket'])->name('scan
 
 
 Route::post('/paypal/create-payment', [PayPalController::class, 'createPayment']);
-Route::post('/paypal/execute-payment', [PayPalController::class, 'executePayment']);
+Route::get('/paypal/execute-payment', [PayPalController::class, 'executePayment'])->name('paypal.execute');
+
 
 
 
