@@ -11,7 +11,7 @@ class HealthDataRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -28,8 +28,8 @@ class HealthDataRequest extends FormRequest
             'weight' => 'required|numeric',
             'heart_rate' => 'required|numeric',
             'blood_type' => 'required|string',
-            'diseases' => 'nullable|string',
-            'allergies' => 'nullable|string',
+            'diseases' => 'nullable|text',
+            'allergies' => 'nullable|text',
         ];
     }
 }

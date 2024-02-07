@@ -37,7 +37,6 @@ class AuthController extends Controller
         ];
         return response()->json($loginResponse, 201);
     }
-
     public function login(LoginRequest $request): JsonResponse
     {
         $request->validated();
@@ -56,24 +55,12 @@ class AuthController extends Controller
         ];
         return response()->json($loginResponse, 200);
     }
-
     public function logout(Request $request): JsonResponse
     {
         auth()->user()->tokens()->delete();
         return response()->json([
             'message' => 'Logout Successfully',
         ]);
-    }
-
-    public function getUserInfo(): UserResource
-    {
-        $user = auth()->user();
-
-        if (!$user) {
-            abort(404, 'User not found');
-        }
-
-        return new UserResource($user);
     }
     public function forgot(ForgotPasswordRequest $request): JsonResponse
     {
@@ -147,4 +134,19 @@ class AuthController extends Controller
             201
         );
     }
+    public function getUserInfo($username): UserResource|JsonResponse
+    {
+        if (!auth()->check()) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $authenticatedUser = auth()->user();
+
+        if ($authenticatedUser->username !== $username) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        return new UserResource($authenticatedUser);
+    }
+
 }

@@ -29,20 +29,21 @@ use Laravel\Socialite\Facades\Socialite;
 |
 */
 
-//Protected Routes
+//Protected Routes - Auth Part
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/user', [AuthController::class, 'getUserInfo']);
+    Route::get('/user/{username}', [AuthController::class, 'getUserInfo']);
     Route::get('/logout', [AuthController::class, 'logout']);
 });
 
-//UnProtected Routes
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('forgot',  [AuthController::class, 'forgot'])->name('password.forgot');
 Route::post('reset', [AuthController::class, 'reset'])->name('password.reset');
 Route::apiResource('users', UserController::class)->except('index');
+
+Route::get('/',[HomeController::class,'index'])->name('home');
 
 
 Route::get('/getData', [SensorController::class, 'getData']);
@@ -58,20 +59,10 @@ Route::get('/positionstack', [LocationController::class, 'positionStack']);
 Route::post('/arcgis-api',[LocationController::class, 'arcgis'])->name('weather.api');
 
 
-
-Route::get('/',[HomeController::class,'index'])->name('home');
-// Other routes
 Route::get('/check/{modelno}', [JacketController::class, 'check'])->name('check');
 Route::get('/share-qrcode', [QrcodeController::class, 'shareQRCode'])->name('share.qrcode');
 
 Route::post('/scan-jacket', [JacketController::class, 'scanJacket'])->name('scan.jacket');
-
-
-Route::post('/paypal/create-payment', [PayPalController::class, 'createPayment']);
-Route::get('/paypal/execute-payment', [PayPalController::class, 'executePayment'])->name('paypal.execute');
-
-
-
 
 Route::get('/auth/redirect/github', [SocialiteAuthController::class, 'redirectToGitHub'])->middleware('web');
 Route::get('/auth/callback/github', [SocialiteAuthController::class, 'handleGitHubCallback'])->middleware('web');
