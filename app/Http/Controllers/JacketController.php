@@ -30,4 +30,24 @@ class JacketController extends Controller
                 'exists' => false,
             ]);
         }
-    }}
+    }
+
+
+    public function manage()
+    {
+        $jackets = Jacket::all();
+        return response()->json($jackets);
+    }
+
+    public function view()
+    {
+        $jackets = Jacket::where('modelno', '1234')->get();
+        return response()->json($jackets);
+    }
+
+    public function moderate()
+    {
+        $jackets = Jacket::where('modelno', '4444')->get();
+        return response()->json($jackets);
+    }
+}

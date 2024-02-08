@@ -7,7 +7,6 @@ use App\Http\Controllers\HeartRateController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\JacketController;
 use App\Http\Controllers\LocationController;
-use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\QrcodeController;
 use App\Http\Controllers\SensorController;
@@ -43,11 +42,6 @@ Route::post('forgot',  [AuthController::class, 'forgot'])->name('password.forgot
 Route::post('reset', [AuthController::class, 'reset'])->name('password.reset');
 Route::apiResource('users', UserController::class)->except('index');
 
-// Login with 3rd part
-
-Route::get('/auth/redirect/github', [SocialiteAuthController::class, 'redirectToGitHub'])->middleware('web');
-Route::get('/auth/callback/github', [SocialiteAuthController::class, 'handleGitHubCallback'])->middleware('web');
-
 Route::get('/',[HomeController::class,'index'])->name('home');
 
 
@@ -59,6 +53,9 @@ Route::post('/sensor-data', [SensorController::class, 'sensorData']);
 Route::get('/heart-rate', [HeartRateController::class, 'getHeartRate']);
 
 Route::post('/positionstack-api',[LocationController::class, 'positionStack'])->name('location.api');
+Route::get('/positionstack', [LocationController::class, 'positionStack']);
+
+Route::post('/arcgis-api',[LocationController::class, 'arcgis'])->name('weather.api');
 
 
 Route::get('/check/{modelno}', [JacketController::class, 'check'])->name('check');
@@ -66,9 +63,16 @@ Route::get('/share-qrcode', [QrcodeController::class, 'shareQRCode'])->name('sha
 
 Route::post('/scan-jacket', [JacketController::class, 'scanJacket'])->name('scan.jacket');
 
-
+Route::get('/auth/redirect/github', [SocialiteAuthController::class, 'redirectToGitHub'])->middleware('web');
+Route::get('/auth/callback/github', [SocialiteAuthController::class, 'handleGitHubCallback'])->middleware('web');
 
 Route::get('login/facebook', [FaceBookController::class, 'redirectToFacebook'])->name('login.facebook')->middleware('web');
 Route::get('login/facebook/callback', [FaceBookController::class, 'handleFacebookCallback'])->middleware('web');
 
-Route::post('submit-health-data',[HealthController::class,'store']);
+Route::post('submit-health-data',[HealthController::class,'submitHealthData']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/manage', [JacketController::class, 'manage'])->middleware('admin');
+    Route::get('/view', [JacketController::class, 'view'])->middleware('parent');
+    Route::get('/moderate', [JacketController::class, 'moderate'])->middleware('guard');
+});
