@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -25,6 +26,7 @@ class User extends Authenticatable implements CanResetPassword
         'username',
         'email',
         'password',
+        'avatar',
     ];
 
     /**
@@ -47,5 +49,23 @@ class User extends Authenticatable implements CanResetPassword
         'password' => 'hashed',
     ];
 
+    protected function area(): BelongsTo
+    {
+        return $this->belongsTo(Area::class);
+    }
 
+    protected function health() : HasOne
+    {
+        return $this->hasOne(Health::class);
+    }
+
+    protected function inquiries(): HasMany
+    {
+        return $this->hasMany(Inquiry::class);
+    }
+
+    protected function jackets(): HasMany
+    {
+        return $this->hasMany(Jacket::class);
+    }
 }

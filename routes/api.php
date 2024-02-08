@@ -1,22 +1,18 @@
 <?php
 
+use App\Http\Controllers\API\HealthController;
+use App\Http\Controllers\API\HeartRateController;
+use App\Http\Controllers\API\JacketController;
+use App\Http\Controllers\API\LocationController;
+use App\Http\Controllers\API\SensorController;
+use App\Http\Controllers\API\SocialiteAuthController;
+use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FaceBookController;
-use App\Http\Controllers\HealthController;
-use App\Http\Controllers\HeartRateController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\JacketController;
-use App\Http\Controllers\LocationController;
-use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\QrcodeController;
-use App\Http\Controllers\SensorController;
-use App\Http\Controllers\SocialiteAuthController;
-use App\Http\Controllers\UserController;
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Laravel\Socialite\Facades\Socialite;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes

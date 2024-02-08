@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\Events\LocationUpdated;
+use App\Http\Controllers\Controller;
 use App\Traits\GeneralTrait;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;

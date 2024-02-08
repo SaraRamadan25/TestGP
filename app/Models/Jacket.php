@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Jacket extends Model
@@ -18,7 +19,7 @@ class Jacket extends Model
         'end_rent_time',
     ];
 
-    public function user()
+    public function user() :BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -26,5 +27,20 @@ class Jacket extends Model
     public function qrCode(): HasOne
     {
         return $this->hasOne(QrCode::class);
+    }
+
+    protected function location(): HasOne
+    {
+        return $this->hasOne(Location::class);
+    }
+
+    protected function area(): BelongsTo
+    {
+        return $this->belongsTo(Area::class);
+    }
+
+    protected function vitalsign(): HasOne
+    {
+        return $this->hasOne(VitalSign::class);
     }
 }

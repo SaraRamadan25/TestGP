@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Response;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -50,7 +47,7 @@ class QrcodeController extends Controller
 
     public function checkQrCodeExistence(Request $request): JsonResponse
     {
-        dd($request->all());
+        //dd($request->all());
         $qrCodeData = $request->input('content');
 
         $qrCode = QrCode::where('content', $qrCodeData)->first();

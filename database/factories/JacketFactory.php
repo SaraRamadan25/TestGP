@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Area;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -18,13 +19,15 @@ class JacketFactory extends Factory
     public function definition(): array
     {
         $user = User::factory()->create();
+        $area = Area::factory()->create();
 
         return [
-            'modelno' => $this->faker->numberBetween(1, 100),
+            'modelno' => fake()->numberBetween(1, 100),
+            'batteryLevel' => fake()->numberBetween(0, 100),
+            'start_rent_time' => fake()->dateTimeBetween('now', '+1 week'),
+            'end_rent_time' => fake()->dateTimeBetween('+1 week', '+2 weeks'),
             'user_id' => $user->id,
-            'batteryLevel' => $this->faker->numberBetween(0, 100),
-            'start_rent_time' => $this->faker->dateTimeBetween('now', '+1 week'),
-            'end_rent_time' => $this->faker->dateTimeBetween('+1 week', '+2 weeks'),
+            'area_id'=> $area->id,
         ];
     }
 }

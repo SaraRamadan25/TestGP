@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
-use App\Http\Requests\JacketRequest;
+use App\Http\Controllers\Controller;
 use App\Models\Jacket;
-use App\Models\QrCode;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class JacketController extends Controller
 {
