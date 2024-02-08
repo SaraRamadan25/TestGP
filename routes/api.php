@@ -70,3 +70,9 @@ Route::get('login/facebook', [FaceBookController::class, 'redirectToFacebook'])-
 Route::get('login/facebook/callback', [FaceBookController::class, 'handleFacebookCallback'])->middleware('web');
 
 Route::post('submit-health-data',[HealthController::class,'submitHealthData']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/manage', [JacketController::class, 'manage'])->middleware('admin');
+    Route::get('/view', [JacketController::class, 'view'])->middleware('parent');
+    Route::get('/moderate', [JacketController::class, 'moderate'])->middleware('guard');
+});
