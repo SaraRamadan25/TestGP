@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class HealthController extends Controller
 {
-    public function submitHealthData(HealthDataRequest $request) :JsonResponse
+    public function store(HealthDataRequest $request) :JsonResponse
     {
         $validatedData = $request->validated();
 

@@ -28,8 +28,8 @@ class HealthDataRequest extends FormRequest
             'weight' => 'required|numeric',
             'heart_rate' => 'required|numeric',
             'blood_type' => 'required|string',
-            'diseases' => 'nullable|text',
-            'allergies' => 'nullable|text',
+            'diseases' => 'nullable|string',
+            'allergies' => 'nullable|string',
         ];
     }
 }

@@ -70,4 +70,4 @@ Route::get('/auth/callback/github', [SocialiteAuthController::class, 'handleGitH
 Route::get('login/facebook', [FaceBookController::class, 'redirectToFacebook'])->name('login.facebook')->middleware('web');
 Route::get('login/facebook/callback', [FaceBookController::class, 'handleFacebookCallback'])->middleware('web');
 
-Route::post('submit-health-data',[HealthController::class,'submitHealthData']);
+Route::post('submit-health-data',[HealthController::class,'store']);
