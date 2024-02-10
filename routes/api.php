@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\HealthController;
 use App\Http\Controllers\API\HeartRateController;
+use App\Http\Controllers\API\InquiryController;
 use App\Http\Controllers\API\JacketController;
 use App\Http\Controllers\API\LocationController;
 use App\Http\Controllers\API\SensorController;
@@ -62,14 +63,13 @@ Route::get('/share-qrcode', [QrcodeController::class, 'shareQRCode'])->name('sha
 Route::post('/scan-jacket', [JacketController::class, 'scanJacket'])->name('scan.jacket');
 
 
-
-Route::get('login/facebook', [FaceBookController::class, 'redirectToFacebook'])->name('login.facebook')->middleware('web');
-Route::get('login/facebook/callback', [FaceBookController::class, 'handleFacebookCallback'])->middleware('web');
-
 Route::post('submit-health-data',[HealthController::class,'store']);
+
+
+Route::apiResource('inquiries', InquiryController::class)->only('store', 'show');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/manage', [JacketController::class, 'manage'])->middleware('admin');
-    Route::get('/view', [JacketController::class, 'view'])->middleware('parent');
+    Route::get('/show', [JacketController::class, 'view'])->middleware('parent');
     Route::get('/moderate', [JacketController::class, 'moderate'])->middleware('guard');
 });

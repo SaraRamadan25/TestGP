@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\JacketResource;
 use App\Models\Jacket;
 use Illuminate\Http\JsonResponse;
 
@@ -30,20 +31,18 @@ class JacketController extends Controller
         }
     }
 
-
-    public function manage()
+    public function manage(): JsonResponse
     {
         $jackets = Jacket::all();
         return response()->json($jackets);
     }
 
-    public function view()
+    public function show(Jacket $jacket): JacketResource
     {
-        $jackets = Jacket::where('modelno', '1234')->get();
-        return response()->json($jackets);
+        return new JacketResource($jacket);
     }
 
-    public function moderate()
+    public function moderate(): JsonResponse
     {
         $jackets = Jacket::where('modelno', '4444')->get();
         return response()->json($jackets);
