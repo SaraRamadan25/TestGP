@@ -24,7 +24,7 @@ class SocialiteAuthController extends Controller
 
             if (!$user) {
                 $user = new User();
-                $user->name = $githubUser->getName();
+                $user->username = $githubUser->getNickname();
                 $user->email = $githubUser->getEmail();
                 $user->save();
             }

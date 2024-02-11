@@ -81,16 +81,19 @@ class QrcodeController extends Controller
 
         try {
             $qrCode = QrCode::format('png')->size(300)->generate("Random Content: $randomContent");
+
+            $base64QRCode = 'data:image/png;base64,'.base64_encode($qrCode);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to generate QR code: ' . $e->getMessage(),
+                'message' => 'Failed to generate QR code: '.$e->getMessage(),
             ], 500);
         }
 
         return response()->json([
             'success' => true,
             'message' => 'QR code generated successfully',
-            'qr_code' => base64_encode($qrCode),
+            'qr_code' => $base64QRCode,
         ]);
-    }}
+    }
+}
