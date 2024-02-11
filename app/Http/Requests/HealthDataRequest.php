@@ -30,6 +30,7 @@ class HealthDataRequest extends FormRequest
             'blood_type' => 'required|string',
             'diseases' => 'nullable|string',
             'allergies' => 'nullable|string',
+            'user_id' => $this->user_id,
         ];
     }
 }

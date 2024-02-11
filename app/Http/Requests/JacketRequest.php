@@ -23,10 +23,11 @@ class JacketRequest extends FormRequest
     {
         return [
             'modelno' => 'required|string',
-            'user_id' => 'required|integer',
             'batteryLevel' => 'required|integer',
             'start_rent_time' => 'required|date',
             'end_rent_time' => 'required|date',
+            'user_id' => 'required|integer',
+            'area_id' => 'required|integer',
         ];
     }
 }

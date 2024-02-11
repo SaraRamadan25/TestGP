@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\HealthDataRequest;
 use App\Models\Health;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class HealthController extends Controller
@@ -19,5 +20,12 @@ class HealthController extends Controller
         Health::create($validatedData);
 
         return response()->json(['message' => 'We have saved your health Info !'], 200);
+    }
+
+
+    public function destroy(Health $health): Response
+    {
+        $health->delete();
+        return response()->noContent();
     }
 }

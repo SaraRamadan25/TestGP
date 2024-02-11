@@ -26,6 +26,7 @@ class JacketFactory extends Factory
             'batteryLevel' => fake()->numberBetween(0, 100),
             'start_rent_time' => fake()->dateTimeBetween('now', '+1 week'),
             'end_rent_time' => fake()->dateTimeBetween('+1 week', '+2 weeks'),
+            'active'=> rand(0,1),
             'user_id' => $user->id,
             'area_id'=> $area->id,
         ];

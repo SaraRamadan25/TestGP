@@ -21,6 +21,7 @@ class JacketResource extends JsonResource
             'batteryLevel' => $this->batteryLevel,
             'start_rent_time' => Carbon::parse($this->start_rent_time)->toDateTimeString(),
             'end_rent_time' => Carbon::parse($this->end_rent_time)->toDateTimeString(),
+            'active'=>$this->active,
             'user_id' => $this->user_id->username,
             'area_id' => $this->area_id->name,
         ];

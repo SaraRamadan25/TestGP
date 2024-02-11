@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Area;
-use App\Models\Climate;
 use App\Models\Instruction;
 use App\Models\Jacket;
 use App\Models\Location;
@@ -24,7 +23,6 @@ class DatabaseSeeder extends Seeder
         QrCode::factory(4)->create();
         Jacket::factory(4)->create();
         Area::factory(4)->create();
-        Climate::factory(4)->create();
         Instruction::factory(4)->create();
         Location::factory(4)->create();
         VitalSign::factory(4)->create();

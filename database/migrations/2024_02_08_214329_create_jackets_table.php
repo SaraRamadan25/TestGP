@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('batteryLevel');
             $table->dateTime('start_rent_time');
             $table->dateTime('end_rent_time');
+            $table->boolean('active')->default(0);
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('area_id')->constrained('areas');
             $table->timestamps();

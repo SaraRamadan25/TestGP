@@ -31,7 +31,7 @@ class JacketController extends Controller
         }
     }
 
-    public function manage(): JsonResponse
+    public function index(): JsonResponse
     {
         $jackets = Jacket::all();
         return response()->json($jackets);
@@ -44,7 +44,7 @@ class JacketController extends Controller
 
     public function moderate(): JsonResponse
     {
-        $jackets = Jacket::where('modelno', '4444')->get();
+        $jackets = Jacket::where('active', '1')->get();
         return response()->json($jackets);
     }
 }

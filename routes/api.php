@@ -1,14 +1,16 @@
 <?php
 
+use App\Http\Controllers\API\AreaController;
 use App\Http\Controllers\API\HealthController;
 use App\Http\Controllers\API\HeartRateController;
 use App\Http\Controllers\API\InquiryController;
+use App\Http\Controllers\API\InstructionController;
 use App\Http\Controllers\API\JacketController;
 use App\Http\Controllers\API\LocationController;
 use App\Http\Controllers\API\SensorController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\VitalSignController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\FaceBookController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\QrcodeController;
 use App\Http\Controllers\SocialiteAuthController;
@@ -63,13 +65,29 @@ Route::get('/share-qrcode', [QrcodeController::class, 'shareQRCode'])->name('sha
 Route::post('/scan-jacket', [JacketController::class, 'scanJacket'])->name('scan.jacket');
 
 
-Route::post('submit-health-data',[HealthController::class,'store']);
+Route::post('/health', [HealthController::class, 'store']);
+Route::delete('/health/{health}', [HealthController::class, 'destroy']);
 
 
 Route::apiResource('inquiries', InquiryController::class)->only('store', 'show');
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/manage', [JacketController::class, 'manage'])->middleware('admin');
-    Route::get('/show', [JacketController::class, 'view'])->middleware('parent');
-    Route::get('/moderate', [JacketController::class, 'moderate'])->middleware('guard');
+    Route::get('/jackets', [JacketController::class, 'index'])->middleware('admin');
+    Route::get('/jackets/{jacket}', [JacketController::class, 'show'])->middleware('parent');
+    Route::get('/jackets/moderate', [JacketController::class, 'moderate'])->middleware('guard');
 });
+
+Route::get('/areas', [AreaController::class, 'index']);
+Route::get('/areas/{area}', [AreaController::class, 'show']);
+
+Route::post('/inquiries', [InquiryController::class, 'store']);
+Route::get('/inquiries/{inquiry}', [InquiryController::class, 'show']);
+Route::delete('/inquiries/{inquiry}', [InquiryController::class, 'destroy']);
+
+Route::get('/instructions', [InstructionController::class, 'index']);
+
+Route::get('/users/{user}', [UserController::class, 'show']);
+Route::delete('/users/{user}', [UserController::class, 'destroy']);
+
+Route::get('/jackets/{jacket_id}/vital-signs', [VitalSignController::class, 'show']);
+Route::put('/jackets/{jacket_id}/vital-signs', [VitalSignController::class, 'update']);
