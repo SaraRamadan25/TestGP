@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password')->nullable();
             $table->string('avatar')->nullable();
-            $table->string('role')->default('parent');
+            $table->foreignId('role_id')->default(2)->constrained('roles');
             $table->foreignId('area_id')->nullable()->constrained('areas');
             $table->timestamps();
         });

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Area;
+use App\Models\Role;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -25,7 +26,7 @@ class UserFactory extends Factory
             'username' => fake()->userName(),
             'email' => fake()->unique()->safeEmail(),
             'password' => Hash::make('password'),
-            'role' => fake()->randomElement(['admin', 'parent', 'guard']),
+            'role_id' =>2,
             'area_id'=> $area->id,
         ];
     }
