@@ -32,6 +32,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user/{username}', [AuthController::class, 'getUserInfo']);
     Route::get('/logout', [AuthController::class, 'logout']);
+    Route::apiResource('health', HealthController::class)->except('index', 'show','update');
+
 });
 
 
@@ -65,8 +67,6 @@ Route::get('/share-qrcode', [QrcodeController::class, 'shareQRCode'])->name('sha
 Route::post('/scan-jacket', [JacketController::class, 'scanJacket'])->name('scan.jacket');
 
 
-Route::post('/health', [HealthController::class, 'store']);
-Route::delete('/health/{health}', [HealthController::class, 'destroy']);
 
 
 Route::apiResource('inquiries', InquiryController::class)->only('store', 'show');

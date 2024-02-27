@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
-class HealthDataRequest extends FormRequest
+class StoreHealthRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -30,7 +31,6 @@ class HealthDataRequest extends FormRequest
             'blood_type' => 'required|string',
             'diseases' => 'nullable|string',
             'allergies' => 'nullable|string',
-            'user_id' => $this->user_id,
         ];
     }
 }
