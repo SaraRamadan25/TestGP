@@ -16,7 +16,7 @@ class VitalSign extends Model
         'jacket_id',
     ];
 
-    protected function jacket(): BelongsTo
+    public function jacket(): BelongsTo
     {
         return $this->belongsTo(Jacket::class);
     }

@@ -13,17 +13,17 @@ class Area extends Model
 
     protected $fillable = ['name'];
 
-    protected function users(): HasMany
+    public function users(): HasMany
     {
         return $this->hasMany(User::class);
     }
 
-    protected function jackets(): HasMany
+    public function jackets(): HasMany
     {
         return $this->hasMany(Jacket::class);
     }
 
-    protected function climate(): HasOne
+    public function climate(): HasOne
     {
         return $this->hasOne(Climate::class);
     }

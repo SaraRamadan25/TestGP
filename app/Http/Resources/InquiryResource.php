@@ -20,8 +20,6 @@ class InquiryResource extends JsonResource
             'email' => $this->email,
             'subject' => $this->subject,
             'message' => $this->message,
-            'user_id' => $this->user_id->username,
-            'created_at' => $this->created_at,
         ];
     }
 }

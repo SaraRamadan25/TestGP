@@ -149,4 +149,26 @@ class AuthController extends Controller
         return new UserResource($authenticatedUser);
     }
 
+    public function destroy($username): JsonResponse
+    {
+        if (auth()->check()) {
+            $user = User::where('username', $username)->first();
+
+            if (!$user) {
+                return response()->json(['message' => 'User not found'], 404);
+            }
+
+            $user->health()->delete();
+            $user->inquiries()->delete();
+            $user->jackets()->delete();
+            $user->tokens()->delete();
+
+            $user->delete();
+            return response()->json([
+                'message' => 'User deleted successfully',
+            ], 204);
+        }
+
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
 }

@@ -29,17 +29,17 @@ class Jacket extends Model
         return $this->hasOne(QrCode::class);
     }
 
-    protected function location(): HasOne
+    public function location(): HasOne
     {
         return $this->hasOne(Location::class);
     }
 
-    protected function area(): BelongsTo
+    public function area(): BelongsTo
     {
         return $this->belongsTo(Area::class);
     }
 
-    protected function vitalsign(): HasOne
+    public function vitalsign(): HasOne
     {
         return $this->hasOne(VitalSign::class);
     }

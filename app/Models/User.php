@@ -49,23 +49,28 @@ class User extends Authenticatable implements CanResetPassword
         'password' => 'hashed',
     ];
 
-    protected function area(): BelongsTo
+    public function area(): BelongsTo
     {
         return $this->belongsTo(Area::class);
     }
 
-    protected function health() : HasOne
+    public function health() : HasOne
     {
         return $this->hasOne(Health::class);
     }
 
-    protected function inquiries(): HasMany
+    public function inquiries(): HasMany
     {
         return $this->hasMany(Inquiry::class);
     }
 
-    protected function jackets(): HasMany
+    public function jackets(): HasMany
     {
         return $this->hasMany(Jacket::class);
+    }
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class);
     }
 }
