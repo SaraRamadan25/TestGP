@@ -17,17 +17,19 @@ class SensorDataReceived implements ShouldBroadcast
     /**
      * Create a new event instance.
      */
-    public int $heartRate;
-    public float $spo2;
-    public float $lat;
-    public float $lng;
+    public $heartRate;
+    public $spo2;
+    public $latitude;
+    public $longitude;
+    public $relayStatus;
 
-    public function __construct($heartRate, $spo2, $latitude, $longitude)
+    public function __construct($heartRate, $spo2, $latitude, $longitude, $relayStatus)
     {
         $this->heartRate = $heartRate;
         $this->spo2 = $spo2;
-        $this->lat= $latitude;
-        $this->lng= $longitude;
+        $this->latitude = $latitude;
+        $this->longitude = $longitude;
+        $this->relayStatus = $relayStatus;
     }
     public function broadcastOn(): Channel
     {
