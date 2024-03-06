@@ -12,9 +12,11 @@ class SensorController extends Controller
 {
     public function getData(Request $request): JsonResponse
     {
-        $gpsData = $request->input('gpsData');
-        $healthData = $request->input('healthData');
-        $relayStatus = $request->input('relayStatus');
+        $inputData = json_decode($request->getContent(), true);
+
+        $gpsData = $inputData['gpsData'];
+        $healthData = $inputData['healthData'];
+        $relayStatus = $inputData['relayStatus'];
 
         $latitude = $gpsData['lat'];
         $longitude = $gpsData['lng'];
