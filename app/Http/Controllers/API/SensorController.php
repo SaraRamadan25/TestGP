@@ -18,11 +18,11 @@ class SensorController extends Controller
 
         try {
             $validatedData = Validator::make($inputData, [
-                'gpsData.lat' => 'sometimes|numeric',
-                'gpsData.lng' => 'sometimes|numeric',
-                'healthData.heartRate' => 'sometimes|numeric',
-                'healthData.spo2' => 'sometimes|numeric',
-                'relayStatus' => 'sometimes|boolean',
+                'gpsData.lat' => 'sometimes',
+                'gpsData.lng' => 'sometimes',
+                'healthData.heartRate' => 'sometimes',
+                'healthData.spo2' => 'sometimes',
+                'relayStatus' => 'sometimes',
             ])->validate();
 
             $gpsData = $validatedData['gpsData'] ?? [];
