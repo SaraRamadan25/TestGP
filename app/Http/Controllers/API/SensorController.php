@@ -16,23 +16,24 @@ class SensorController extends Controller
     {
         $inputData = json_decode($request->getContent(), true);
 
+        $gpsData = json_decode($inputData['gpsData'], true);
+        $healthData = json_decode($inputData['healthData'], true);
+        $relayStatus = $inputData['relayStatus'];
+
         try {
-            $validatedData = Validator::make($inputData, [
-                'gpsData.lat' => 'sometimes',
-                'gpsData.lng' => 'sometimes',
-                'healthData.heartRate' => 'sometimes',
-                'healthData.spo2' => 'sometimes',
-                'relayStatus' => 'sometimes',
+            $validatedData = Validator::make($gpsData + $healthData + ['relayStatus' => $relayStatus], [
+                'lat' => 'sometimes|numeric',
+                'lng' => 'sometimes|numeric',
+                'heartRate' => 'sometimes|numeric',
+                'spo2' => 'sometimes|numeric',
+                'relayStatus' => 'sometimes|boolean',
             ])->validate();
 
-            $gpsData = $validatedData['gpsData'] ?? [];
-            $healthData = $validatedData['healthData'] ?? [];
+            $latitude = $validatedData['lat'] ?? null;
+            $longitude = $validatedData['lng'] ?? null;
+            $heartRate = $validatedData['heartRate'] ?? null;
+            $spo2 = $validatedData['spo2'] ?? null;
             $relayStatus = $validatedData['relayStatus'] ?? null;
-
-            $latitude = $gpsData['lat'] ?? null;
-            $longitude = $gpsData['lng'] ?? null;
-            $heartRate = $healthData['heartRate'] ?? null;
-            $spo2 = $healthData['spo2'] ?? null;
 
             Log::info('Received sensor data', [
                 'heartRate' => $heartRate,
@@ -49,3 +50,5 @@ class SensorController extends Controller
             return response()->json(['message' => 'Invalid data received', 'errors' => $e->errors()], 422);
         }
     }}
+
+
