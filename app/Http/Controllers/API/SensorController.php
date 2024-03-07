@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class SensorController extends Controller
 {
@@ -14,25 +16,36 @@ class SensorController extends Controller
     {
         $inputData = json_decode($request->getContent(), true);
 
-        $gpsData = $inputData['gpsData'];
-        $healthData = $inputData['healthData'];
-        $relayStatus = $inputData['relayStatus'];
+        try {
+            $validatedData = Validator::make($inputData, [
+                'gpsData.lat' => 'sometimes|numeric',
+                'gpsData.lng' => 'sometimes|numeric',
+                'healthData.heartRate' => 'sometimes|numeric',
+                'healthData.spo2' => 'sometimes|numeric',
+                'relayStatus' => 'sometimes|boolean',
+            ])->validate();
 
-        $latitude = $gpsData['lat'];
-        $longitude = $gpsData['lng'];
-        $heartRate = $healthData['heartRate'];
-        $spo2 = $healthData['spo2'];
+            $gpsData = $validatedData['gpsData'] ?? [];
+            $healthData = $validatedData['healthData'] ?? [];
+            $relayStatus = $validatedData['relayStatus'] ?? null;
 
-        Log::info('Received sensor data', [
-            'heartRate' => $heartRate,
-            'spo2' => $spo2,
-            'latitude' => $latitude,
-            'longitude' => $longitude,
-            'relayStatus' => $relayStatus,
-        ]);
+            $latitude = $gpsData['lat'] ?? null;
+            $longitude = $gpsData['lng'] ?? null;
+            $heartRate = $healthData['heartRate'] ?? null;
+            $spo2 = $healthData['spo2'] ?? null;
 
-        broadcast(new SensorDataReceived($heartRate, $spo2, $latitude, $longitude,$relayStatus))->toOthers();
+            Log::info('Received sensor data', [
+                'heartRate' => $heartRate,
+                'spo2' => $spo2,
+                'latitude' => $latitude,
+                'longitude' => $longitude,
+                'relayStatus' => $relayStatus,
+            ]);
 
-        return response()->json(['message' => 'Data received successfully']);
-    }
-}
+            broadcast(new SensorDataReceived($heartRate, $spo2, $latitude, $longitude, $relayStatus))->toOthers();
+
+            return response()->json(['message' => 'Data received successfully']);
+        } catch (ValidationException $e) {
+            return response()->json(['message' => 'Invalid data received', 'errors' => $e->errors()], 422);
+        }
+    }}
