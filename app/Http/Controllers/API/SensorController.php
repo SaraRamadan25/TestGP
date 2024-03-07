@@ -49,6 +49,26 @@ class SensorController extends Controller
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Invalid data received', 'errors' => $e->errors()], 422);
         }
-    }}
+    }
+    public function simulateSensorData(): JsonResponse
+    {
+        $mockData = [
+            'gpsData' => json_encode([
+                'lat' => 51.509865,
+                'lng' => -0.118092
+            ]),
+            'healthData' => json_encode([
+                'heartRate' => 72,
+                'spo2' => 98
+            ]),
+            'relayStatus' => true
+        ];
+
+        $mockRequest = new Request([], [], [], [], [], [], json_encode($mockData));
+
+        return $this->getData($mockRequest);
+    }
+
+}
 
 

@@ -48,7 +48,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('jackets/{jacket}/vital-signs', [VitalSignController::class, 'show']);
 });
 
-Route::post('/getData', [SensorController::class, 'getData']);
+Route::get('/getData', [SensorController::class, 'getData']);
+Route::get('/simulateSensorData', [SensorController::class, 'simulateSensorData']);
 Route::get('/heart-rate', [HeartRateController::class, 'getHeartRate']);
 
 Route::post('/positionstack-api',[LocationController::class, 'positionStack'])->name('location.api');
