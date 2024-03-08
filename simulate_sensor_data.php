@@ -4,10 +4,12 @@ require 'vendor/autoload.php';
 
 use GuzzleHttp\Client;
 
-$client = new Client();
+$client = new Client([
+    'verify' => false, // Add this line
+]);
 
 try {
-    $response = $client->request('GET', 'http://127.0.0.1:8000/api/simulateSensorData');
+    $response = $client->request('GET', 'http://save-lives.online/api/simulateSensorData');
 
     echo $response->getBody();
 } catch (Exception $e) {
