@@ -16,6 +16,7 @@ class SensorController extends Controller
     {
         $inputData = json_decode($request->getContent(), true);
 
+
         try {
             $validatedData = Validator::make($inputData, [
                 'gpsData.lat' => 'sometimes|numeric',
