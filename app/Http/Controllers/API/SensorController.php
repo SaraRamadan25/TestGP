@@ -16,8 +16,8 @@ class SensorController extends Controller
     {
         $inputData = json_decode($request->getContent(), true);
 
-        $gpsData = json_decode($inputData['gpsData'], true);
-        $healthData = json_decode($inputData['healthData'], true);
+        $gpsData = $inputData['gpsData'];
+        $healthData = $inputData['healthData'];
         $relayStatus = $inputData['relayStatus'];
 
         try {
