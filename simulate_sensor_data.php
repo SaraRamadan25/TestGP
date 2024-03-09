@@ -5,7 +5,7 @@ require 'vendor/autoload.php';
 use GuzzleHttp\Client;
 
 $client = new Client([
-    'verify' => false, // Add this line
+    'verify' => false,
 ]);
 
 try {
