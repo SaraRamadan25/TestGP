@@ -16,24 +16,23 @@ class SensorController extends Controller
     {
         $inputData = json_decode($request->getContent(), true);
 
-        $gpsData = json_decode($inputData['gpsData'], true);
-        $healthData = json_decode($inputData['healthData'], true);
-        $relayStatus = $inputData['relayStatus'];
-
         try {
-            $validatedData = Validator::make($gpsData + $healthData + ['relayStatus' => $relayStatus], [
-                'lat' => 'sometimes|numeric',
-                'lng' => 'sometimes|numeric',
-                'heartRate' => 'sometimes|numeric',
-                'spo2' => 'sometimes|numeric',
+            $validatedData = Validator::make($inputData, [
+                'gpsData.lat' => 'sometimes|numeric',
+                'gpsData.lng' => 'sometimes|numeric',
+                'healthData.heartRate' => 'sometimes|numeric',
+                'healthData.spo2' => 'sometimes|numeric',
                 'relayStatus' => 'sometimes|boolean',
             ])->validate();
 
-            $latitude = $validatedData['lat'] ?? null;
-            $longitude = $validatedData['lng'] ?? null;
-            $heartRate = $validatedData['heartRate'] ?? null;
-            $spo2 = $validatedData['spo2'] ?? null;
+            $gpsData = $validatedData['gpsData'] ?? [];
+            $healthData = $validatedData['healthData'] ?? [];
             $relayStatus = $validatedData['relayStatus'] ?? null;
+
+            $latitude = $gpsData['lat'] ?? null;
+            $longitude = $gpsData['lng'] ?? null;
+            $heartRate = $healthData['heartRate'] ?? null;
+            $spo2 = $healthData['spo2'] ?? null;
 
             Log::info('Received sensor data', [
                 'heartRate' => $heartRate,
@@ -49,25 +48,4 @@ class SensorController extends Controller
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Invalid data received', 'errors' => $e->errors()], 422);
         }
-    }
-    public function simulateSensorData(): JsonResponse
-    {
-        $mockData = [
-            'gpsData' => json_encode([
-                'lat' => 51.509865,
-                'lng' => -0.118092
-            ]),
-            'healthData' => json_encode([
-                'heartRate' => 72,
-                'spo2' => 98
-            ]),
-            'relayStatus' => true
-        ];
-
-        $mockRequest = new Request([], [], [], [], [], [], json_encode($mockData));
-
-        return $this->getData($mockRequest);
-    }
-
-}
-
+    }}
