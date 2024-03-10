@@ -14,26 +14,12 @@ class SensorController extends Controller
 {
     public function getData(Request $request)
     {
-        $data = $request->json()->all();
 
-        $dataType = $this->getDataType($data);
+        $data = json_decode($request->getContent(), true);
 
-        broadcast(new SensorDataReceived($dataType, $data));
+        event(new SensorDataReceived($data));
 
-        return response()->json(['Data Received successfully' => true]);
+        return response()->json(['message' => 'Data received successfully']);
     }
 
-    private function getDataType($data)
-    {
-        if (isset($data['lat']) && isset($data['lng'])) {
-            return 'gpsData';
-        } elseif (isset($data['heartRate']) && isset($data['spo2'])) {
-            return 'healthData';
-        } elseif (isset($data['relayStatus'])) {
-            return 'relayStatus';
-        } else {
-            return 'unknown';
-        }
-
-    }
 }

@@ -17,22 +17,25 @@ class SensorDataReceived implements ShouldBroadcast
     /**
      * Create a new event instance.
      */
-    public $dataType;
     public $data;
 
-    public function __construct($dataType, $data)
+    /**
+     * Create a new event instance.
+     *
+     * @param array $data
+     */
+    public function __construct(array $data)
     {
-        $this->dataType = $dataType;
         $this->data = $data;
     }
 
-    public function broadcastOn(): Channel
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return Channel|PresenceChannel|array
+     */
+    public function broadcastOn(): Channel|PresenceChannel|array
     {
-        return new Channel('data-channel');
-    }
-
-    public function broadcastAs(): string
-    {
-        return 'data.'.$this->dataType;
+        return new PresenceChannel('readings');
     }
 }
