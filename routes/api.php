@@ -8,7 +8,6 @@ use App\Http\Controllers\API\InstructionController;
 use App\Http\Controllers\API\JacketController;
 use App\Http\Controllers\API\LocationController;
 use App\Http\Controllers\API\SensorController;
-use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\VitalSignController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;

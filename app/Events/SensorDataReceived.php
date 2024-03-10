@@ -29,13 +29,12 @@ class SensorDataReceived implements ShouldBroadcast
         $this->data = $data;
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return Channel|PresenceChannel|array
-     */
-    public function broadcastOn(): Channel|PresenceChannel|array
+    public function broadcastOn(): Channel
     {
-        return new PresenceChannel('readings');
+        return new Channel('sensor-data');
+    }
+    public function broadcastAs(): string
+    {
+        return 'sensor-data';
     }
 }
