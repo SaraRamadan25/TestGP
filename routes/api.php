@@ -61,3 +61,31 @@ Route::get('/areas/{area}', [AreaController::class, 'show']);
 
 Route::get('/instructions', [InstructionController::class, 'index']);
 
+use Illuminate\Support\Facades\Storage;
+
+Route::post('/SensorData', function (\Illuminate\Http\Request $request) {
+    $data = $request->all();
+
+    $logData = "Time: ".now()->format("Y-m-d H:i:s").', ';
+
+    if (isset($data['heartRate'])) {
+        $logData .= "Heart Rate: ".$data['heartRate'].', ';
+    }
+
+    if (isset($data['spo2'])) {
+        $logData .= "SpO2: ".$data['spo2'].', ';
+    }
+
+    if (isset($data['relayStatus'])) {
+        $logData .= "Relay Status: ".($data['relayStatus'] ? 'Active' : 'Inactive').', ';
+    }
+
+    if (isset($data['lat']) && isset($data['lng'])) {
+        $logData .= "Latitude: ".$data['lat'].', ';
+        $logData .= "Longitude: ".$data['lng'];
+    }
+
+    Storage::append("arduino-log.txt", $logData);
+
+    return response()->json(['message' => 'Data received successfully']);
+});
