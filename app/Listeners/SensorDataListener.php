@@ -23,12 +23,18 @@ class SensorDataListener implements ShouldQueue
      */
     public function handle(SensorDataReceived $event)
     {
-        // Log the received data (optional)
+        $heartRate = $event->data['heartRate'] ?? null;
+        $spo2 = $event->data['spo2'] ?? null;
+        $longitude = $event->data['lng'] ?? null;
+        $latitude = $event->data['lat'] ?? null;
+        $relayStatus = $event->data['relayStatus'] ?? null;
+
         Log::info('Received sensor data', [
-            'heartRate' => $event->heartRate,
-            'spo2' => $event->spo2,
+            'heartRate' => $heartRate,
+            'spo2' => $spo2,
+            'longitude' => $longitude,
+            'latitude' => $latitude,
+            'relayStatus' => $relayStatus,
         ]);
-
-
     }
 }
