@@ -172,6 +172,8 @@ return [
         SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
         Ejarnutowski\LaravelApiKey\Providers\ApiKeyServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
+        App\Providers\FirebaseServiceProvider::class,
+
 
 
     ])->toArray(),

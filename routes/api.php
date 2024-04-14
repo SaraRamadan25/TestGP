@@ -10,7 +10,9 @@ use App\Http\Controllers\API\LocationController;
 use App\Http\Controllers\API\SensorController;
 use App\Http\Controllers\API\VitalSignController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FirebaseController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PayPalTransactionController;
 use App\Http\Controllers\QrcodeController;
 use App\Http\Controllers\SocialiteAuthController;
 use Illuminate\Support\Facades\Route;
@@ -61,31 +63,7 @@ Route::get('/areas/{area}', [AreaController::class, 'show']);
 
 Route::get('/instructions', [InstructionController::class, 'index']);
 
-use Illuminate\Support\Facades\Storage;
-
-Route::post('/SensorData', function (\Illuminate\Http\Request $request) {
-    $data = $request->all();
-
-    $logData = "Time: ".now()->format("Y-m-d H:i:s").', ';
-
-    if (isset($data['heartRate'])) {
-        $logData .= "Heart Rate: ".$data['heartRate'].', ';
-    }
-
-    if (isset($data['spo2'])) {
-        $logData .= "SpO2: ".$data['spo2'].', ';
-    }
-
-    if (isset($data['relayStatus'])) {
-        $logData .= "Relay Status: ".($data['relayStatus'] ? 'Active' : 'Inactive').', ';
-    }
-
-    if (isset($data['lat']) && isset($data['lng'])) {
-        $logData .= "Latitude: ".$data['lat'].', ';
-        $logData .= "Longitude: ".$data['lng'];
-    }
-
-    Storage::append("arduino-log.txt", $logData);
-
-    return response()->json(['message' => 'Data received successfully']);
-});
+Route::post('/paypal/checkout', [PayPalTransactionController::class,'checkout']);
+Route::get('/paypal/complete-payment', [PayPalTransactionController::class, 'completePayment']);
+Route::post('/v2/checkout/orders/{order_id}/capture', [PayPalTransactionController::class, 'captureOrder']);
+Route::post('/send-notifications', [FirebaseController::class,'sendNotifications']);

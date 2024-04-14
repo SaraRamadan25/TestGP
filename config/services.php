@@ -42,4 +42,8 @@ return [
         'redirect' => 'http://localhost:8000/api/auth/callback/github',
     ],
 
+    'paypal' => [
+        'client_id' => env('PAYPAL_CLIENT_ID'),
+        'client_secret' => env('PAYPAL_CLIENT_SECRET'),
+    ],
 ];
