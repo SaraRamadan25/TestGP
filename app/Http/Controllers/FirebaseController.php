@@ -9,40 +9,26 @@ use Kreait\Firebase\Messaging\Notification;
 
 class FirebaseController extends Controller
 {
-    public function sendNotifications()
+
+    public function sendNotification(Request $request)
     {
-        // Initialize Firebase Admin SDK
         $factory = app('firebase');
 
-        // Retrieve sensor data
-        $sensorData = $this->retrieveSensorData();
+        $deviceToken = $request->input('device_token');
+        $title = $request->input('title');
+        $body = $request->input('body');
 
-        // Check if the heart rate reading is above 140
-        if ($sensorData['healthData']['heartRate'] > 140) {
-            // Send FCM notification
-            $messaging = $factory->createMessaging();
-            $message = CloudMessage::withTarget('topic', 'health_alerts') // replace 'health_alerts' with your actual topic
-            ->withNotification(Notification::create('High Heart Rate Alert', 'Heart rate is above 140'))
-                ->withData(['heartRate' => $sensorData['healthData']['heartRate']]);
+        $notification = Notification::fromArray([
+            'title' => $title,
+            'body' => $body
+        ]);
 
-            $messaging->send($message);
-            return response()->json(['message' => 'Notifications sent successfully']);
-        }
+        $message = CloudMessage::withTarget('token', $deviceToken)
+            ->withNotification($notification);
 
-        // You can add more conditions and notifications based on other sensor readings
-        return response()->json(['message' => 'No notifications sent']);
-    }
+        $messaging = $factory->createMessaging();
+        $messaging->send($message);
 
-    // You need to implement the retrieveSensorData method
-    private function retrieveSensorData()
-    {
-        // Initialize Firebase Admin SDK
-        $factory = app('firebase');
-
-        // Get a reference to the database
-        $database = $factory->createDatabase();
-
-        // Get a reference to the 'sensors' node and retrieve the latest data
-        return $database->getReference('sensorsData')->getSnapshot()->getValue();
+        return response()->json(['message' => 'Notification sent successfully']);
     }
 }
