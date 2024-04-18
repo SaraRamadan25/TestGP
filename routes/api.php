@@ -2,15 +2,12 @@
 
 use App\Http\Controllers\API\AreaController;
 use App\Http\Controllers\API\HealthController;
-use App\Http\Controllers\API\HeartRateController;
 use App\Http\Controllers\API\InquiryController;
 use App\Http\Controllers\API\InstructionController;
 use App\Http\Controllers\API\JacketController;
 use App\Http\Controllers\API\LocationController;
-use App\Http\Controllers\API\SensorController;
 use App\Http\Controllers\API\VitalSignController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\FirebaseController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PayPalTransactionController;
 use App\Http\Controllers\QrcodeController;
@@ -49,9 +46,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('jackets/{jacket}/vital-signs', [VitalSignController::class, 'show']);
 });
 
-Route::post('/getData', [SensorController::class, 'getData']);
-Route::get('/simulateSensorData', [SensorController::class, 'simulateSensorData']);
-Route::get('/heart-rate', [HeartRateController::class, 'getHeartRate']);
 
 Route::post('/positionstack-api',[LocationController::class, 'positionStack'])->name('location.api');
 
@@ -66,5 +60,4 @@ Route::get('/instructions', [InstructionController::class, 'index']);
 Route::post('/paypal/checkout', [PayPalTransactionController::class,'checkout']);
 Route::get('/paypal/complete-payment', [PayPalTransactionController::class, 'completePayment']);
 Route::post('/v2/checkout/orders/{order_id}/capture', [PayPalTransactionController::class, 'captureOrder']);
-Route::post('/send-notifications', [FirebaseController::class,'sendNotifications']);
-Route::post('send-notification', [FirebaseController::class, 'sendNotification']);
+
