@@ -1,6 +1,6 @@
 <?php
 
-// app/Console/Commands/CheckHeartRate.php
+// app/Console/Commands/CheckDistance.php
 
 namespace App\Console\Commands;
 
@@ -10,22 +10,22 @@ use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
 use Kreait\Firebase\Exception\FirebaseException;
 
-class CheckHeartRate extends Command
+class CheckDistance extends Command
 {
-    protected $signature = 'heart-rate:check';
-    protected $description = 'Check heart rate and send notifications if condition is met';
+    protected $signature = 'distance:check';
+    protected $description = 'Check distance and send notification if condition is met';
 
     public function handle()
     {
         try {
             $factory = app('firebase');
             $database = $factory->createDatabase();
-            $sensorsData = $database->getReference('sensorsData')->getSnapshot()->getValue();
+            $distance = $database->getReference('distance')->getSnapshot()->getValue();
 
-            if ($sensorsData['healthData']['heartRate'] > 125) {
+            if ($distance['distance'] > 10) {
                 $deviceToken = env('DEVICE_TOKEN');
                 $title = 'Alert!';
-                $body = "Your child's heart rate is too high! , please check him/her now!";
+                $body = 'Your child is far away from you , please check him/her now!';
 
                 $notification = Notification::fromArray([
                     'title' => $title,
@@ -40,7 +40,7 @@ class CheckHeartRate extends Command
 
                 $this->info('Notification sent successfully');
             } else {
-                $this->info('Heart rate is not greater than 125. No notification sent.');
+                $this->info('Distance is not greater than 10 meters. No notification sent.');
             }
         } catch (FirebaseException $e) {
             $this->error('Firebase Exception: ' . $e->getMessage());
