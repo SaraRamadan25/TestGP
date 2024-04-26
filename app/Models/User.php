@@ -73,4 +73,10 @@ class User extends Authenticatable implements CanResetPassword
     {
         return $this->belongsTo(Role::class);
     }
+
+    const ROLES = [
+        'admin' => 1,
+        'guard' => 2,
+        'parent' => 3,
+    ];
 }

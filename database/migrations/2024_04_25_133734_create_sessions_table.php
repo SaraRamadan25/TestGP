@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vital_signs', function (Blueprint $table) {
+        Schema::create('sessions', function (Blueprint $table) {
             $table->id();
-            $table->double('heart_rate');
-            $table->double('oxygen_rate');
-            $table->foreignId('jacket_id')->constrained('jackets');
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->foreignId('trainer_id');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('vital_signs');
+        Schema::dropIfExists('sessions');
     }
 };

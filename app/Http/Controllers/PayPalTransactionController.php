@@ -87,74 +87,33 @@ class PayPalTransactionController extends Controller
             return response()->json(['error' => 'PayPal API Error: '.$e->getMessage()], 500);
         }
     }
-    public function captureOrder($orderId)
+
+    public function completeOrder(Request $request, $orderId)
     {
-        // Look up the transaction
-        $transaction = PayPalTransaction::where('transaction_id', $orderId)->first();
-
-        if (!$transaction) {
-            Log::info('Transaction not found: ' . $orderId);
-            return response()->json(['error' => 'Transaction not found'], 404);
-        }
-
-        // Initialize PayPal SDK with Sandbox environment
-        $environment = new SandboxEnvironment(config('services.paypal.client_id'), config('services.paypal.client_secret'));
-        $client = new PayPalHttpClient($environment);
-
-        // Create a request to capture the order
-        $captureOrderRequest = new OrdersCaptureRequest($orderId);
-        $captureOrderRequest->prefer('return=representation');
-
         try {
-            // Execute the request
-            $response = $client->execute($captureOrderRequest);
+            // Initialize PayPal SDK with Sandbox environment
+            $environment = new SandboxEnvironment(config('services.paypal.client_id'),
+                config('services.paypal.client_secret'));
+            $client = new PayPalHttpClient($environment);
 
-            // Update the transaction status in the database
-            $transaction->status = $response->result->status;
-            $transaction->save();
+            // Create capture order request
+            $captureOrderRequest = new OrdersCaptureRequest($orderId);
+            $captureOrderRequest->prefer('return=representation');
 
-            Log::info('Payment captured successfully: ' . $orderId);
-            return response()->json(['message' => 'Payment captured successfully'], 200);
+            // Send the request to capture the order
+            $captureResponse = $client->execute($captureOrderRequest);
+
+            // Extract captured status from the response
+            $captureStatus = $captureResponse->result->status;
+
+            // Update the order status to "completed" in your application
+            // Example: Update your database record or perform other actions
+            // based on the captured status
+
+            return response()->json(['status' => 'completed', 'order_id' => $orderId], 200);
         } catch (HttpException $e) {
             // Handle API exception
-            Log::error('PayPal API Error: ' . $e->getMessage());
-            return response()->json(['error' => 'PayPal API Error: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'PayPal API Error: '.$e->getMessage()], 500);
         }
     }
-
-public function completePayment(Request $request)
-    {
-        $transactionId = $request->query('token');
-
-        // Look up the transaction
-        $transaction = PayPalTransaction::where('transaction_id', $transactionId)->first();
-
-        if (!$transaction) {
-            Log::info('Transaction not found: ' . $transactionId);
-            return response()->json(['error' => 'Transaction not found'], 404);
-        }
-
-        // Initialize PayPal SDK with Sandbox environment
-        $environment = new SandboxEnvironment(config('services.paypal.client_id'), config('services.paypal.client_secret'));
-        $client = new PayPalHttpClient($environment);
-
-        // Create a request to capture the order
-        $captureOrderRequest = new OrdersCaptureRequest($transactionId);
-        $captureOrderRequest->prefer('return=representation');
-
-        try {
-            // Execute the request
-            $response = $client->execute($captureOrderRequest);
-
-            // Update the transaction status in the database
-            $transaction->status = $response->result->status;
-            $transaction->save();
-
-            Log::info('Payment completed successfully: ' . $transactionId);
-            return response()->json(['message' => 'Payment completed successfully'], 200);
-        } catch (HttpException $e) {
-            // Handle API exception
-            Log::error('PayPal API Error: ' . $e->getMessage());
-            return response()->json(['error' => 'PayPal API Error: ' . $e->getMessage()], 500);
-        }
-    }}
+}
