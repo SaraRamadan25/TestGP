@@ -45,6 +45,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('jackets/{jacket}', [JacketController::class, 'show'])->middleware('parent');
     Route::get('jackets/moderate', [JacketController::class, 'moderate'])->middleware('guard');
     Route::get('jackets/{jacket}/vital-signs', [VitalSignController::class, 'show']);
+    Route::get('trainers', [TrainerController::class, 'index']);
 });
 
 
@@ -61,4 +62,3 @@ Route::get('/instructions', [InstructionController::class, 'index']);
 Route::post('/paypal/checkout', [PayPalTransactionController::class,'checkout']);
 Route::post('/paypal/checkout/orders/{order_id}/capture', [PayPalTransactionController::class, 'completeOrder']);
 
-Route::apiResource('trainers', TrainerController::class);

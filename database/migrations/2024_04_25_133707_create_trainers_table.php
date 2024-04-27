@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description');
-            $table->float('availability_times');
+            $table->string('availability_times');
             $table->timestamps();
         });
     }

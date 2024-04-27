@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Trainer;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,9 @@ class SessionFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'start_date' => $this->faker->date(),
+            'end_date' => $this->faker->date(),
+            'trainer_id' => Trainer::factory()
         ];
     }
 }

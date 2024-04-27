@@ -9,6 +9,8 @@ use App\Models\Jacket;
 use App\Models\Location;
 use App\Models\QrCode;
 use App\Models\Role;
+use App\Models\Session;
+use App\Models\Trainer;
 use App\Models\User;
 use App\Models\VitalSign;
 use Illuminate\Database\Seeder;
@@ -33,7 +35,7 @@ class DatabaseSeeder extends Seeder
         Area::factory(4)->create();
         Instruction::factory(4)->create();
         Location::factory(4)->create();
-        VitalSign::factory(4)->create();
+        Session::factory(4)->create();
 
     }
 }

@@ -13,49 +13,25 @@ use Illuminate\Support\Facades\Auth;
 
 class TrainerController extends Controller
 {
-
     public function index(): JsonResponse
     {
-        if (Auth::check()) {
-            $trainers = Trainer::paginate(5)->with('sessions');
+        if (auth()->check())
+        {
+            $trainers = Trainer::with('sessions')->paginate(5);
             return response()->json($trainers);
         }
-        return response()->json(['message' => 'Unauthorized'], 401);
+        return response()->json(['message' => 'Unauthenticated'], 401);
     }
+    // will be limited now
 
-
-    public function store(StoreTrainerRequest $request)
+/*    public function store(StoreTrainerRequest $request)
     {
         if (\App\Enums\Role::Trainer || \App\Enums\Role::Admin) {
             $trainer = Trainer::create($request->validated());
             return response()->json($trainer, 201);
         }
         return response()->json(['message' => 'Unauthorized'], 401);
-    }
+    }*/
 
 
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Trainer $trainer)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateTrainerRequest $request, Trainer $trainer)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Trainer $trainer)
-    {
-        //
-    }
 }

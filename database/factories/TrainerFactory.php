@@ -17,7 +17,8 @@ class TrainerFactory extends Factory
     public function definition(): array
     {
         return [
-            //
-        ];
+            'name' => $this->faker->name,
+            'description' => $this->faker->words(3, true),
+            'availability_times' => $this->faker->time('h:i A') . ' to ' . $this->faker->time('h:i A'),        ];
     }
 }
