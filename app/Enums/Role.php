@@ -6,7 +6,6 @@ enum Role: string
 {
     case Admin = 'admin';
     case Guard = 'guard';
-
     case Parent = 'parent';
     case Trainer = 'trainer';
 
@@ -16,7 +15,7 @@ enum Role: string
       'admin' => 'Admin',
       'guard' => 'Guard',
       'parent' => 'Parent',
-        'trainer' => 'Trainer',
+      'trainer' => 'Trainer',
     };
   }
 }

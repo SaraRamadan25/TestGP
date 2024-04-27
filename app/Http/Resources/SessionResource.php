@@ -16,9 +16,9 @@ class SessionResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'start_date' => $this->start_date,
-            'end_date' => $this->end_date,
+            'appointment' => $this->appointment,
             'trainer' => $this->trainer,
+            'user' => $this->user,
         ];
     }
 }

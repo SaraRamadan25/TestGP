@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('sessions', function (Blueprint $table) {
             $table->id();
-            $table->date('start_date');
-            $table->date('end_date');
+            $table->date('appointment');
             $table->foreignId('trainer_id');
+            $table->foreignId('user_id');
             $table->timestamps();
         });
     }
