@@ -22,9 +22,9 @@ class StoreSessionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'start_date' => 'required',
-            'end_date' => 'required',
+            'appointment' => 'required|date',
             'trainer_id' => 'required',
+            'user_id' => 'required',
         ];
     }
 }

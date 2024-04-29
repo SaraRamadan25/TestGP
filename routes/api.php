@@ -11,6 +11,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PayPalTransactionController;
 use App\Http\Controllers\QrcodeController;
+use App\Http\Controllers\SessionController;
 use App\Http\Controllers\SocialiteAuthController;
 use App\Http\Controllers\TrainerController;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +47,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('jackets/moderate', [JacketController::class, 'moderate'])->middleware('guard');
     Route::get('jackets/{jacket}/vital-signs', [VitalSignController::class, 'show']);
     Route::get('trainers', [TrainerController::class, 'index']);
+    Route::apiResource('sessions', SessionController::class)->except('show, update');
+
 });
 
 

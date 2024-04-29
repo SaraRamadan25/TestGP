@@ -11,56 +11,29 @@ class SessionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+
+        public function index()
     {
-        //
+        $userId = auth()->id();
+        $sessions = Session::where('user_id', $userId)->paginate(5);
+        return response()->json($sessions);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreSessionRequest $request)
     {
-        //
+        $validatedData = $request->validated();
+        $validatedData['user_id'] = auth()->id();
+
+        $session = Session::create($validatedData);
+        return response()->json($session, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Session $session)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Session $session)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateSessionRequest $request, Session $session)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Session $session)
     {
-        //
+        if (auth()->user()->id !== $session->user_id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        $session->delete();
+        return response()->json(null, 204);
     }
 }

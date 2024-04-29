@@ -22,16 +22,6 @@ class TrainerController extends Controller
         }
         return response()->json(['message' => 'Unauthenticated'], 401);
     }
-    // will be limited now
-
-/*    public function store(StoreTrainerRequest $request)
-    {
-        if (\App\Enums\Role::Trainer || \App\Enums\Role::Admin) {
-            $trainer = Trainer::create($request->validated());
-            return response()->json($trainer, 201);
-        }
-        return response()->json(['message' => 'Unauthorized'], 401);
-    }*/
 
 
 }
