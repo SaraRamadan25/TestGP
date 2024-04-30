@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('avatar')->nullable();
             $table->foreignId('role_id')->default(2)->constrained('roles');
             $table->foreignId('area_id')->nullable()->constrained('areas');
+            $table->text('description')->nullable();
+            $table->string('availability_times')->nullable();
             $table->timestamps();
         });
     }

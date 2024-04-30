@@ -74,9 +74,21 @@ class User extends Authenticatable implements CanResetPassword
         return $this->belongsTo(Role::class);
     }
 
+    public function sessions(): HasMany
+    {
+        return $this->hasMany(Session::class);
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(Child::class);
+    }
+
+
     const ROLES = [
         'admin' => 1,
         'guard' => 2,
         'parent' => 3,
+        'trainer' => 4,
     ];
 }

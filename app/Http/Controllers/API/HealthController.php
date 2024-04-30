@@ -25,21 +25,4 @@ class HealthController extends Controller
 
         return response()->json(['message' => 'We have saved your health Info !'], 200);
     }
-    public function update(StoreHealthRequest $request, Health $health) :JsonResponse
-    {
-        if (!Auth::check()) {
-            return response()->json(['message' => 'You must be logged in to perform this action'], 401);
-        }
-
-        $validatedData = $request->validated();
-
-        $health->update($validatedData);
-
-        return response()->json(['message' => 'Health info updated successfully!'], 200);
-    }
-    public function destroy(Health $health): Response
-    {
-        $health->delete();
-        return response()->noContent();
-    }
 }

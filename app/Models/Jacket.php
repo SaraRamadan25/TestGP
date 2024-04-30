@@ -39,8 +39,4 @@ class Jacket extends Model
         return $this->belongsTo(Area::class);
     }
 
-    public function vitalsign(): HasOne
-    {
-        return $this->hasOne(VitalSign::class);
-    }
 }

@@ -77,5 +77,6 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
         'parent' => \App\Http\Middleware\ParentMiddleware::class,
         'guard' => \App\Http\Middleware\GuardMiddleware::class,
+        'trainer' => \App\Http\Middleware\TrainerMiddleware::class
     ];
 }

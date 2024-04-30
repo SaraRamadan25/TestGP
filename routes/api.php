@@ -6,14 +6,13 @@ use App\Http\Controllers\API\InquiryController;
 use App\Http\Controllers\API\InstructionController;
 use App\Http\Controllers\API\JacketController;
 use App\Http\Controllers\API\LocationController;
-use App\Http\Controllers\API\VitalSignController;
+use App\Http\Controllers\API\SessionController;
+use App\Http\Controllers\API\TrainerController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PayPalTransactionController;
 use App\Http\Controllers\QrcodeController;
-use App\Http\Controllers\SessionController;
 use App\Http\Controllers\SocialiteAuthController;
-use App\Http\Controllers\TrainerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -36,19 +35,34 @@ Route::post('reset', [AuthController::class, 'reset'])->name('password.reset');
 Route::get('/auth/redirect/github', [SocialiteAuthController::class, 'redirectToGitHub'])->middleware('web');
 Route::get('/auth/callback/github', [SocialiteAuthController::class, 'handleGitHubCallback'])->middleware('web');
 
+
+// Common routes
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('user/{username}', [AuthController::class, 'getUserInfo']);
     Route::delete('user/{username}', [AuthController::class, 'destroy']);
     Route::get('logout', [AuthController::class, 'logout']);
-    Route::apiResource('health', HealthController::class)->except('index', 'show');
-    Route::post('inquiries', [InquiryController::class,'store']);
-    Route::get('jackets', [JacketController::class, 'index'])->middleware('admin');
-    Route::get('jackets/{jacket}', [JacketController::class, 'show'])->middleware('parent');
-    Route::get('jackets/moderate', [JacketController::class, 'moderate'])->middleware('guard');
-    Route::get('jackets/{jacket}/vital-signs', [VitalSignController::class, 'show']);
-    Route::get('trainers', [TrainerController::class, 'index']);
-    Route::apiResource('sessions', SessionController::class)->except('show, update');
+    Route::post('/inquiries', [InquiryController::class,'store']);
+});
 
+
+// Parent routes
+Route::middleware(['auth:sanctum', 'parent'])->group(function () {
+    Route::post('/health', [HealthController::class, 'store']);
+    Route::get('/jackets', [JacketController::class, 'index']);
+    Route::get('/trainers', [TrainerController::class, 'index']);
+    Route::get('/sessions', [SessionController::class, 'index']);
+});
+
+// Guard routes
+Route::middleware(['auth:sanctum', 'guard'])->group(function () {
+    Route::get('/jackets/active', [JacketController::class, 'moderate']);
+});
+
+// Trainer routes
+Route::middleware(['auth:sanctum', 'trainer'])->group(function () {
+    Route::get('/sessions', [SessionController::class, 'index']);
+    Route::post('/sessions', [SessionController::class, 'store']);
+    Route::delete('/sessions/{session}', [SessionController::class, 'destroy']);
 });
 
 

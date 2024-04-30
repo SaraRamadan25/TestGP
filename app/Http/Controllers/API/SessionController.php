@@ -1,17 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
-use App\Models\Session;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSessionRequest;
-use App\Http\Requests\UpdateSessionRequest;
+use App\Models\Session;
 
 class SessionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-
         public function index()
     {
         $userId = auth()->id();

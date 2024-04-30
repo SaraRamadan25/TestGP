@@ -10,9 +10,7 @@ use App\Models\Location;
 use App\Models\QrCode;
 use App\Models\Role;
 use App\Models\Session;
-use App\Models\Trainer;
 use App\Models\User;
-use App\Models\VitalSign;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -27,6 +25,7 @@ class DatabaseSeeder extends Seeder
             ['id' => 1, 'name' => 'admin'],
             ['id' => 2, 'name' => 'parent'],
             ['id' => 3, 'name' => 'guard'],
+            ['id' => 4, 'name' => 'trainer'],
         ]);
 
         User::factory(4)->create();
