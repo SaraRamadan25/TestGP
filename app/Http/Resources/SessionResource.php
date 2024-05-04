@@ -17,7 +17,7 @@ class SessionResource extends JsonResource
         return [
             'id' => $this->id,
             'appointment' => $this->appointment,
-            'trainer' => $this->trainer,
+            'trainer' => new TrainerResource($this->whenLoaded('trainer')),
             'user' => $this->user,
         ];
     }

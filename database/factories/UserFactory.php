@@ -26,8 +26,7 @@ class UserFactory extends Factory
             'username' => fake()->userName(),
             'email' => fake()->unique()->safeEmail(),
             'password' => Hash::make('password'),
-            'role_id' =>2,
-            'area_id'=> $area->id,
+            'area_id' => Area::factory(),
         ];
     }
 

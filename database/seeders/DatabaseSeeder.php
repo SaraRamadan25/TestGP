@@ -21,13 +21,6 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
-        Role::insert([
-            ['id' => 1, 'name' => 'admin'],
-            ['id' => 2, 'name' => 'parent'],
-            ['id' => 3, 'name' => 'guard'],
-            ['id' => 4, 'name' => 'trainer'],
-        ]);
-
         User::factory(4)->create();
         QrCode::factory(4)->create();
         Jacket::factory(4)->create();

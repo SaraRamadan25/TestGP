@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Role;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Resources\UserResource;
+use App\Models\Guard;
 use App\Models\PasswordResetToken;
+use App\Models\Trainer;
 use App\Models\User;
 use App\Notifications\CustomPasswordResetNotification;
 use Illuminate\Http\JsonResponse;
@@ -28,19 +31,45 @@ class AuthController extends Controller
         }
 
         $validatedData['password'] = Hash::make($validatedData['password']);
-        $user = User::create($validatedData);
+
+        unset($validatedData['confirm_password'], $validatedData['role']);
+
+        switch ($request->input('role')) {
+            case Role::TRAINER:
+                $user = Trainer::create($validatedData);
+                break;
+            case Role::GUARD:
+                $user = Guard::create($validatedData);
+                break;
+            case Role::PARENT:
+                $user = User::create($validatedData);
+                break;
+            default:
+                throw new \InvalidArgumentException('Invalid user role.');
+        }
 
         $token = $user->createToken('authToken')->plainTextToken;
+
         $loginResponse = [
             'user' => UserResource::make($user),
             'token' => $token,
         ];
+
         return response()->json($loginResponse, 201);
     }
     public function login(LoginRequest $request): JsonResponse
     {
         $request->validated();
+
         $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            $user = Trainer::where('email', $request->email)->first();
+        }
+
+        if (!$user) {
+            $user = Guard::where('email', $request->email)->first();
+        }
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
@@ -49,15 +78,23 @@ class AuthController extends Controller
         }
 
         $token = $user->createToken('authToken')->plainTextToken;
+
         $loginResponse = [
             'user' => UserResource::make($user),
             'token' => $token,
         ];
+
         return response()->json($loginResponse, 200);
     }
     public function logout(Request $request): JsonResponse
     {
-        auth()->user()->tokens()->delete();
+        $user = auth()->user();
+
+        if ($user instanceof User || $user instanceof Guard || $user instanceof Trainer) {
+
+            $user->tokens()->delete();
+        }
+
         return response()->json([
             'message' => 'Logout Successfully',
         ]);
@@ -65,6 +102,14 @@ class AuthController extends Controller
     public function forgot(ForgotPasswordRequest $request): JsonResponse
     {
         $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            $user = Trainer::where('email', $request->email)->first();
+        }
+
+        if (!$user) {
+            $user = Guard::where('email', $request->email)->first();
+        }
 
         if (!$user) {
             return response()->json([
@@ -100,6 +145,14 @@ class AuthController extends Controller
         $attributes = $request->validated();
 
         $user = User::where('email', $attributes['email'])->first();
+
+        if (!$user) {
+            $user = Trainer::where('email', $attributes['email'])->first();
+        }
+
+        if (!$user) {
+            $user = Guard::where('email', $attributes['email'])->first();
+        }
 
         if (!$user) {
             return response()->json([
@@ -140,19 +193,34 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $authenticatedUser = auth()->user();
+        $authenticatedUser = User::where('username', $username)->first();
 
-        if ($authenticatedUser->username !== $username) {
+        if (!$authenticatedUser) {
+            $authenticatedUser = Trainer::where('username', $username)->first();
+        }
+
+        if (!$authenticatedUser) {
+            $authenticatedUser = Guard::where('username', $username)->first();
+        }
+
+        if (!$authenticatedUser || auth()->user()->username !== $username) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         return new UserResource($authenticatedUser);
     }
-
     public function destroy($username): JsonResponse
     {
         if (auth()->check()) {
             $user = User::where('username', $username)->first();
+
+            if (!$user) {
+                $user = Trainer::where('username', $username)->first();
+            }
+
+            if (!$user) {
+                $user = Guard::where('username', $username)->first();
+            }
 
             if (!$user) {
                 return response()->json(['message' => 'User not found'], 404);

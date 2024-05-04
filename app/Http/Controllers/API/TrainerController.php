@@ -4,18 +4,22 @@ namespace App\Http\Controllers\API;
 
 use App\Enums\Role;
 use App\Http\Controllers\Controller;
+use App\Models\Session;
+use App\Models\Trainer;
 use App\Models\User;
 
 class TrainerController extends Controller
 {
-    public function index()
+    public function indexUser()
     {
-        $trainerRole = Role::Trainer;
-
-        $trainers = User::whereHas('roles', function ($query) use ($trainerRole) {
-            $query->where('name', $trainerRole);
-        })->get();
-
-        return response()->json(['trainers' => $trainers], 200);
+        if (!auth()->check()) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+        if (auth()->user()->role == 'parent') {
+            $trainers = Trainer::with('sessions')->paginate(5);
+            return response()->json($trainers);
+        } else {
+            return response()->json(['message' => 'Access denied'], 403);
+        }
     }
 }

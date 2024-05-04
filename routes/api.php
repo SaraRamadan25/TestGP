@@ -8,6 +8,7 @@ use App\Http\Controllers\API\JacketController;
 use App\Http\Controllers\API\LocationController;
 use App\Http\Controllers\API\SessionController;
 use App\Http\Controllers\API\TrainerController;
+use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PayPalTransactionController;
@@ -27,7 +28,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/',[HomeController::class,'index'])->name('home');
-
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('forgot',  [AuthController::class, 'forgot'])->name('password.forgot');
@@ -42,26 +42,34 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('user/{username}', [AuthController::class, 'destroy']);
     Route::get('logout', [AuthController::class, 'logout']);
     Route::post('/inquiries', [InquiryController::class,'store']);
+    Route::post('/sessions{session}/book', [SessionController::class, 'book']);
+
+    Route::get('/UserSessions/{user}', [UserController::class, 'UserSessions']);
+
 });
 
+Route::get('trainerAllSessions', [SessionController::class, 'TrainerAllSessions']);
 
 // Parent routes
 Route::middleware(['auth:sanctum', 'parent'])->group(function () {
     Route::post('/health', [HealthController::class, 'store']);
     Route::get('/jackets', [JacketController::class, 'index']);
     Route::get('/trainers', [TrainerController::class, 'index']);
-    Route::get('/sessions', [SessionController::class, 'index']);
+    Route::post('/sessions/{session}', [SessionController::class, 'bookSession']);
+    Route::get('/sessions', [SessionController::class, 'bookedSessions']);
+    Route::delete('/sessions/{session}', [SessionController::class, 'CancelSession']);
+    Route::get('/availableTrainers', [TrainerController::class, 'indexUser']);
+
 });
 
 // Guard routes
 Route::middleware(['auth:sanctum', 'guard'])->group(function () {
     Route::get('/jackets/active', [JacketController::class, 'moderate']);
 });
-
 // Trainer routes
 Route::middleware(['auth:sanctum', 'trainer'])->group(function () {
-    Route::get('/sessions', [SessionController::class, 'index']);
     Route::post('/sessions', [SessionController::class, 'store']);
+    Route::get('/allTrainerSessions', [TrainerController::class, 'indexTrainer']);
     Route::delete('/sessions/{session}', [SessionController::class, 'destroy']);
 });
 

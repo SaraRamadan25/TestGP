@@ -22,12 +22,7 @@ class User extends Authenticatable implements CanResetPassword
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'username',
-        'email',
-        'password',
-        'avatar',
-    ];
+protected $guarded = [];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -69,10 +64,6 @@ class User extends Authenticatable implements CanResetPassword
         return $this->hasMany(Jacket::class);
     }
 
-    public function role(): BelongsTo
-    {
-        return $this->belongsTo(Role::class);
-    }
 
     public function sessions(): HasMany
     {
@@ -84,11 +75,4 @@ class User extends Authenticatable implements CanResetPassword
         return $this->hasMany(Child::class);
     }
 
-
-    const ROLES = [
-        'admin' => 1,
-        'guard' => 2,
-        'parent' => 3,
-        'trainer' => 4,
-    ];
 }

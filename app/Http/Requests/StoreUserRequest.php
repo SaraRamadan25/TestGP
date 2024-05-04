@@ -18,6 +18,7 @@ class StoreUserRequest extends FormRequest
             'email'=>'required|email',
             'password'=>'required|min:8',
             'confirm_password' => 'required|same:password',
-            'role'=>'required|in:parent,guard,trainer'
+            'role'=>'required',
+            'area_id'=>'required|exists:areas,id',
         ];
     }}

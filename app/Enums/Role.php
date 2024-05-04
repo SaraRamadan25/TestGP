@@ -2,20 +2,20 @@
 
 namespace App\Enums;
 
-enum Role: string
-{
-    case Admin = 'admin';
-    case Guard = 'guard';
-    case Parent = 'parent';
-    case Trainer = 'trainer';
+use InvalidArgumentException;
 
-  public static function getRole(string $role): string
-  {
-    return match ($role) {
-      'admin' => 'Admin',
-      'guard' => 'Guard',
-      'parent' => 'Parent',
-      'trainer' => 'Trainer',
-    };
-  }
+class Role
+{
+    public const ADMIN = 'admin';
+    public const GUARD = 'guard';
+    public const PARENT = 'parent';
+    public const TRAINER = 'trainer';
+
+    public static function getRole(string $role): string
+    {
+        return match ($role) {
+            self::ADMIN, self::GUARD, self::PARENT, self::TRAINER => $role,
+            default => throw new InvalidArgumentException("Invalid role: $role"),
+        };
+    }
 }
