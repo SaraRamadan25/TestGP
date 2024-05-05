@@ -42,9 +42,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('user/{username}', [AuthController::class, 'destroy']);
     Route::get('logout', [AuthController::class, 'logout']);
     Route::post('/inquiries', [InquiryController::class,'store']);
-    Route::post('/sessions{session}/book', [SessionController::class, 'book']);
-
+    Route::post('/sessions/{session}/book', [SessionController::class, 'bookSession']);
     Route::get('/UserSessions/{user}', [UserController::class, 'UserSessions']);
+    Route::delete('/sessions/cancel/{session}', [SessionController::class, 'CancelSession']);
 
 });
 
@@ -56,8 +56,6 @@ Route::middleware(['auth:sanctum', 'parent'])->group(function () {
     Route::get('/jackets', [JacketController::class, 'index']);
     Route::get('/trainers', [TrainerController::class, 'index']);
     Route::post('/sessions/{session}', [SessionController::class, 'bookSession']);
-    Route::get('/sessions', [SessionController::class, 'bookedSessions']);
-    Route::delete('/sessions/{session}', [SessionController::class, 'CancelSession']);
     Route::get('/availableTrainers', [TrainerController::class, 'indexUser']);
 
 });

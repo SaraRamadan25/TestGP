@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('sessions', function (Blueprint $table) {
             $table->id();
             $table->date('appointment');
-            $table->boolean('hidden')->default(false);
-            $table->foreignId('user_id')->constrained('users')->unique();
+            $table->foreignId('user_id')->default(null)->nullable()->constrained('users')->unique();
             $table->foreignId('trainer_id')->constrained('trainers')->unique();
             $table->timestamps();
         });

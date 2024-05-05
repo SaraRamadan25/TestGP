@@ -36,22 +36,19 @@ class UserController extends Controller
         return response()->json(['message' => 'Unauthorized'], 401);
     }
 
-        public function UserSessions(User $user)
+    public function UserSessions(User $user)
     {
-        $sessions = Session::where('user_id', $user->id)->get();
-        return response()->json(['sessions' => SessionResource::collection($sessions)], 200);
-
-    }
-
-    public function DestroySession(Session $session): JsonResponse
-    {
-        if (Auth::check() && auth()->user()->role_id == Role::PARENT) {
-            $session->hidden = true;
-            $session->save();
-
-            return response()->json(['message' => 'Session canceled successfully'], 200);
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        return response()->json(['message' => 'Unauthorized'], 401);
+        $sessions = Session::where('user_id', $user->id)->get();
+
+        if ($sessions->isEmpty()) {
+            return response()->json(['message' => 'No sessions found'], 404);
+        }
+
+        return response()->json(['sessions' => SessionResource::collection($sessions)], 200);
     }
+
 }

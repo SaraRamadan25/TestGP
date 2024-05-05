@@ -6,8 +6,8 @@ use App\Enums\Role;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSessionRequest;
 use App\Models\Session;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Request;
 
 class SessionController extends Controller
 {
@@ -45,7 +45,7 @@ class SessionController extends Controller
     // For Parents Only
     public function bookSession(Request $request, Session $session)
     {
-        $user = $request->user(); // Get the currently authenticated user
+        $user = $request->user();
 
         if ($session->user_id) {
             return response()->json(['message' => 'Session already booked'], 400);
@@ -55,13 +55,6 @@ class SessionController extends Controller
         $session->save();
 
         return response()->json(['message' => 'Session booked successfully'], 200);
-    }
-    public function bookedSessions(Request $request)
-    {
-        $user = $request->user();
-
-        $sessions = Session::where('user_id', $user->id)->get();
-        return response()->json($sessions, 200);
     }
     public function CancelSession(Request $request, $sessionId)
     {
