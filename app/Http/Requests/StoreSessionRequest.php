@@ -23,8 +23,6 @@ class StoreSessionRequest extends FormRequest
     {
         return [
             'appointment' => 'required|date',
-            'trainer_id' => 'required',
-            'user_id' => 'required',
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Area;
+use App\Models\Guard;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,6 +21,8 @@ class JacketFactory extends Factory
     {
         $user = User::factory()->create();
         $area = Area::factory()->create();
+        $guard = Guard::factory()->create();
+
 
         return [
             'modelno' => fake()->numberBetween(1, 100),
@@ -29,6 +32,7 @@ class JacketFactory extends Factory
             'active'=> rand(0,1),
             'user_id' => $user->id,
             'area_id'=> $area->id,
+            'guard_id' => $guard->id,
         ];
     }
 }

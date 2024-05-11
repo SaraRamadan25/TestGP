@@ -6,44 +6,50 @@ use App\Enums\Role;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSessionRequest;
 use App\Models\Session;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class SessionController extends Controller
 {
     // For Trainers Only
-    public function TrainerAllSessions(){
-        if (auth()->user()->role != 'trainer') {
+    public function TrainerAllSessions($trainer): JsonResponse
+    {
+        if (!DB::table('trainers')->where('id', $trainer)->exists()) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
-        $sessions = Session::where('trainer_id', auth()->id())->paginate(5);
+
+        $sessions = Session::where('trainer_id', $trainer)->paginate(5);
         return response()->json($sessions, 200);
     }
-    public function store(StoreSessionRequest $request)
+    public function store(StoreSessionRequest $request, $trainerId): JsonResponse
     {
-        if (auth()->user()->role != 'trainer') {
+        if (!DB::table('trainers')->where('id', $trainerId)->exists()) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
+
         $validatedData = $request->validated();
-        $validatedData['user_id'] = auth()->id();
+        $validatedData['trainer_id'] = $trainerId;
 
         $session = Session::create($validatedData);
         return response()->json($session, 201);
     }
-    public function destroy(Session $session)
+    public function destroy($trainerId, Session $session): JsonResponse
     {
-        if (auth()->user()->role != 'trainer') {
+        if (!DB::table('trainers')->where('id', $trainerId)->exists()) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
-        if (auth()->user()->id !== $session->user_id) {
+
+        if ((int)$trainerId !== (int)$session->trainer_id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
+
         $session->delete();
         return response()->json(null, 204);
     }
-
     // For Parents Only
-    public function bookSession(Request $request, Session $session)
+    public function bookSession(Request $request, Session $session): JsonResponse
     {
         $user = $request->user();
 
@@ -56,7 +62,7 @@ class SessionController extends Controller
 
         return response()->json(['message' => 'Session booked successfully'], 200);
     }
-    public function CancelSession(Request $request, $sessionId)
+    public function CancelSession(Request $request, $sessionId): JsonResponse
     {
         $user = $request->user();
 

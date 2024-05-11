@@ -4,7 +4,9 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\JacketResource;
+use App\Models\Guard;
 use App\Models\Jacket;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 
 class JacketController extends Controller
@@ -30,21 +32,28 @@ class JacketController extends Controller
             ]);
         }
     }
-
-    public function index(): JsonResponse
+    public function index($guardId): JsonResponse
     {
-        $jackets = Jacket::all();
-        return response()->json($jackets);
+        try {
+            $guard = Guard::findOrFail($guardId);
+            $jackets = $guard->jackets;
+            return response()->json($jackets);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
     }
-
-    public function show(Jacket $jacket): JacketResource
+    public function activeJackets($guardId): JsonResponse
     {
-        return new JacketResource($jacket);
-    }
+        try {
+            $guard = Guard::findOrFail($guardId);
+            $activeJackets = $guard->jackets()->where('active', '1')->get();
+            $count = $activeJackets->count();
 
-    public function moderate(): JsonResponse
-    {
-        $jackets = Jacket::where('active', '1')->get();
-        return response()->json($jackets);
-    }
-}
+            return response()->json([
+                'count' => $count,
+                'jackets' => $activeJackets,
+            ]);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+    }}

@@ -17,6 +17,7 @@ class Jacket extends Model
         'batteryLevel',
         'start_rent_time',
         'end_rent_time',
+        'guard_id',
     ];
 
     public function user() :BelongsTo
@@ -39,4 +40,8 @@ class Jacket extends Model
         return $this->belongsTo(Area::class);
     }
 
+    public function guardUser(): BelongsTo
+    {
+        return $this->belongsTo(Guard::class);
+    }
 }

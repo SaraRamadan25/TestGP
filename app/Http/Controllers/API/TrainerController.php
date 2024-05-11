@@ -7,19 +7,20 @@ use App\Http\Controllers\Controller;
 use App\Models\Session;
 use App\Models\Trainer;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 
 class TrainerController extends Controller
 {
-    public function indexUser()
+    public function availableTrainers(): JsonResponse
     {
-        if (!auth()->check()) {
+        if (!auth()->check())
+        {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-        if (auth()->user()->role == 'parent') {
+        else
+         {
             $trainers = Trainer::with('sessions')->paginate(5);
             return response()->json($trainers);
-        } else {
-            return response()->json(['message' => 'Access denied'], 403);
         }
     }
 }

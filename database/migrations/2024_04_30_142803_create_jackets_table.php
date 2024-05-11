@@ -20,6 +20,7 @@ return new class extends Migration
             $table->boolean('active')->default(0);
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('area_id')->constrained('areas');
+            $table->foreignId('guard_id')->constrained('guards');
             $table->timestamps();
         });
     }

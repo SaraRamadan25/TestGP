@@ -8,11 +8,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Session extends Model
 {
-    protected $fillable = ['appointment','user_id'];
+    protected $guarded = [];
 
     use HasFactory;
 
     public function user() :BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function trainer() :BelongsTo
     {
         return $this->belongsTo(User::class);
     }

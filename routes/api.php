@@ -16,17 +16,7 @@ use App\Http\Controllers\QrcodeController;
 use App\Http\Controllers\SocialiteAuthController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
-
+// Guest Routes
 Route::get('/',[HomeController::class,'index'])->name('home');
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
@@ -34,54 +24,50 @@ Route::post('forgot',  [AuthController::class, 'forgot'])->name('password.forgot
 Route::post('reset', [AuthController::class, 'reset'])->name('password.reset');
 Route::get('/auth/redirect/github', [SocialiteAuthController::class, 'redirectToGitHub'])->middleware('web');
 Route::get('/auth/callback/github', [SocialiteAuthController::class, 'handleGitHubCallback'])->middleware('web');
+Route::get('/instructions', [InstructionController::class, 'index']);
 
 
-// Common routes
+// Common Routes For All ( Parent, Guard, Trainer)
+
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('user/{username}', [AuthController::class, 'getUserInfo']);
     Route::delete('user/{username}', [AuthController::class, 'destroy']);
     Route::get('logout', [AuthController::class, 'logout']);
     Route::post('/inquiries', [InquiryController::class,'store']);
+    Route::get('/areas', [AreaController::class, 'index']);
+    Route::get('/areas/{area}', [AreaController::class, 'show']);
+});
+
+// Parent Routes
+
+Route::middleware(['auth:sanctum', 'parent'])->group(function () {
+    Route::post('/health', [HealthController::class, 'store']);
+    Route::get('/availableTrainers', [TrainerController::class, 'availableTrainers']);
     Route::post('/sessions/{session}/book', [SessionController::class, 'bookSession']);
     Route::get('/UserSessions/{user}', [UserController::class, 'UserSessions']);
     Route::delete('/sessions/cancel/{session}', [SessionController::class, 'CancelSession']);
-
+    Route::get('/share-qrcode', [QrcodeController::class, 'shareQRCode'])->name('share.qrcode');
+    Route::get('/check/{modelno}', [JacketController::class, 'check'])->name('check');
 });
 
-Route::get('trainerAllSessions', [SessionController::class, 'TrainerAllSessions']);
+// Guard Routes
 
-// Parent routes
-Route::middleware(['auth:sanctum', 'parent'])->group(function () {
-    Route::post('/health', [HealthController::class, 'store']);
-    Route::get('/jackets', [JacketController::class, 'index']);
-    Route::get('/trainers', [TrainerController::class, 'index']);
-    Route::post('/sessions/{session}', [SessionController::class, 'bookSession']);
-    Route::get('/availableTrainers', [TrainerController::class, 'indexUser']);
-
-});
-
-// Guard routes
 Route::middleware(['auth:sanctum', 'guard'])->group(function () {
-    Route::get('/jackets/active', [JacketController::class, 'moderate']);
+    Route::get('/jackets/{guard:username}', [JacketController::class, 'index']);
+    Route::get('/jackets/active', [JacketController::class, 'activeJackets']);
+
 });
-// Trainer routes
+
+// Trainer Routes
+
 Route::middleware(['auth:sanctum', 'trainer'])->group(function () {
-    Route::post('/sessions', [SessionController::class, 'store']);
-    Route::get('/allTrainerSessions', [TrainerController::class, 'indexTrainer']);
-    Route::delete('/sessions/{session}', [SessionController::class, 'destroy']);
+    Route::delete('/sessions/{trainer}/{session}', [SessionController::class, 'destroy']);
+    Route::post('/sessions/{trainer}', [SessionController::class, 'store']);
+    Route::get('/sessions/{trainer}', [SessionController::class, 'TrainerAllSessions']);
 });
 
 
 Route::post('/positionstack-api',[LocationController::class, 'positionStack'])->name('location.api');
-
-Route::get('/share-qrcode', [QrcodeController::class, 'shareQRCode'])->name('share.qrcode');
-Route::get('/check/{modelno}', [JacketController::class, 'check'])->name('check');
-
-Route::get('/areas', [AreaController::class, 'index']);
-Route::get('/areas/{area}', [AreaController::class, 'show']);
-
-Route::get('/instructions', [InstructionController::class, 'index']);
-
 Route::post('/paypal/checkout', [PayPalTransactionController::class,'checkout']);
 Route::post('/paypal/checkout/orders/{order_id}/capture', [PayPalTransactionController::class, 'completeOrder']);
 
