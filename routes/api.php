@@ -10,14 +10,12 @@ use App\Http\Controllers\API\SessionController;
 use App\Http\Controllers\API\TrainerController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PayPalTransactionController;
 use App\Http\Controllers\QrcodeController;
 use App\Http\Controllers\SocialiteAuthController;
 use Illuminate\Support\Facades\Route;
 
 // Guest Routes
-Route::get('/',[HomeController::class,'index'])->name('home');
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('forgot',  [AuthController::class, 'forgot'])->name('password.forgot');
@@ -26,9 +24,7 @@ Route::get('/auth/redirect/github', [SocialiteAuthController::class, 'redirectTo
 Route::get('/auth/callback/github', [SocialiteAuthController::class, 'handleGitHubCallback'])->middleware('web');
 Route::get('/instructions', [InstructionController::class, 'index']);
 
-
 // Common Routes For All ( Parent, Guard, Trainer)
-
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('user/{username}', [AuthController::class, 'getUserInfo']);
     Route::delete('user/{username}', [AuthController::class, 'destroy']);
@@ -39,7 +35,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 
 // Parent Routes
-
 Route::middleware(['auth:sanctum', 'parent'])->group(function () {
     Route::post('/health', [HealthController::class, 'store']);
     Route::get('/availableTrainers', [TrainerController::class, 'availableTrainers']);
@@ -51,7 +46,6 @@ Route::middleware(['auth:sanctum', 'parent'])->group(function () {
 });
 
 // Guard Routes
-
 Route::middleware(['auth:sanctum', 'guard'])->group(function () {
     Route::get('/jackets/{guard:username}', [JacketController::class, 'index']);
     Route::get('/jackets/active', [JacketController::class, 'activeJackets']);
@@ -59,14 +53,13 @@ Route::middleware(['auth:sanctum', 'guard'])->group(function () {
 });
 
 // Trainer Routes
-
 Route::middleware(['auth:sanctum', 'trainer'])->group(function () {
     Route::delete('/sessions/{trainer}/{session}', [SessionController::class, 'destroy']);
     Route::post('/sessions/{trainer}', [SessionController::class, 'store']);
     Route::get('/sessions/{trainer}', [SessionController::class, 'TrainerAllSessions']);
 });
 
-
+// wait for flutter implementation
 Route::post('/positionstack-api',[LocationController::class, 'positionStack'])->name('location.api');
 Route::post('/paypal/checkout', [PayPalTransactionController::class,'checkout']);
 Route::post('/paypal/checkout/orders/{order_id}/capture', [PayPalTransactionController::class, 'completeOrder']);
