@@ -11,6 +11,11 @@ use Illuminate\Http\JsonResponse;
 
 class TrainerController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('parent')->only('availableTrainers');
+    }
+
     public function availableTrainers(): JsonResponse
     {
         if (!auth()->check())
@@ -18,7 +23,7 @@ class TrainerController extends Controller
             return response()->json(['message' => 'Unauthorized'], 401);
         }
         else
-         {
+        {
             $trainers = Trainer::with('sessions')->paginate(5);
             return response()->json($trainers);
         }

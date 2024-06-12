@@ -25,7 +25,7 @@ class TrainerFactory extends Factory
             'area_id' => Area::factory(),
             'description' => $this->faker->sentence,
             'availability_times' => $this->faker->sentence,
-            'role_id' => Role::factory(),
+            'role_id' => Role::query()->whereBetween('id', [1, 3])->inRandomOrder()->first()->id,
 
         ];
     }

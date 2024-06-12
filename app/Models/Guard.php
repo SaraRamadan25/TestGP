@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Laravel\Sanctum\HasApiTokens;
 
 class Guard extends Model
 {
-    use HasFactory;
+    use HasFactory, HasApiTokens;
     protected $guarded = [];
 
     public function areas(): BelongsTo

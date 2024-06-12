@@ -27,7 +27,7 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'password' => Hash::make('password'),
             'area_id' => Area::factory(),
-            'role_id' => Role::factory(),
+            'role_id' => Role::query()->whereBetween('id', [1, 3])->inRandomOrder()->first()->id,
         ];
     }
 

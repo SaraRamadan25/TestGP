@@ -35,19 +35,19 @@ class AuthController extends Controller
 
         unset($validatedData['confirm_password']);
 
-        $role = $request->input('role');
-        switch ($role) {
-            case Role::TRAINER:
+        $roleId = $request->input('role_id');
+        switch ($roleId) {
+            case Role::TRAINER->value:
                 $user = Trainer::create($validatedData);
                 break;
-            case Role::GUARD:
+            case Role::GUARD->value:
                 $user = Guard::create($validatedData);
                 break;
-            case Role::PARENT:
+            case Role::PARENT->value:
                 $user = User::create($validatedData);
                 break;
             default:
-                return response()->json(['message' => 'Invalid user role. Accepted roles are trainer, guard, parent.'], 400);
+                return response()->json(['message' => 'Invalid user role. Accepted roles are parent, guard, trainer.'], 400);
         }
 
         $token = $user->createToken('authToken')->plainTextToken;
@@ -59,6 +59,7 @@ class AuthController extends Controller
 
         return response()->json($loginResponse, 201);
     }
+
     public function login(LoginRequest $request): JsonResponse
     {
         $request->validated();
@@ -88,12 +89,12 @@ class AuthController extends Controller
 
         return response()->json($loginResponse, 200);
     }
+
     public function logout(Request $request): JsonResponse
     {
         $user = auth()->user();
 
         if ($user instanceof User || $user instanceof Guard || $user instanceof Trainer) {
-
             $user->tokens()->delete();
         }
 
@@ -101,6 +102,7 @@ class AuthController extends Controller
             'message' => 'Logout Successfully',
         ]);
     }
+
     public function forgot(ForgotPasswordRequest $request): JsonResponse
     {
         $user = User::where('email', $request->email)->first();
@@ -142,6 +144,7 @@ class AuthController extends Controller
             'token' => $resetPasswordToken,
         ], 200);
     }
+
     public function reset(ResetPasswordRequest $request)
     {
         $attributes = $request->validated();
@@ -189,6 +192,7 @@ class AuthController extends Controller
             201
         );
     }
+
     public function getUserInfo($username): UserResource|JsonResponse
     {
         if (!auth()->check()) {
@@ -211,6 +215,7 @@ class AuthController extends Controller
 
         return new UserResource($authenticatedUser);
     }
+
     public function destroy($username): JsonResponse
     {
         if (auth()->check()) {
@@ -229,16 +234,9 @@ class AuthController extends Controller
             }
 
             $user->health()->delete();
-            $user->inquiries()->delete();
-            $user->jackets()->delete();
             $user->tokens()->delete();
-
-            $user->delete();
-            return response()->json([
-                'message' => 'User deleted successfully',
-            ], 204);
         }
 
-        return response()->json(['message' => 'Unauthorized'], 401);
+        return response()->json(['message' => 'User deleted successfully'], 200);
     }
 }

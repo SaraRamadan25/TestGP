@@ -48,7 +48,7 @@ Route::middleware(['auth:sanctum', 'parent'])->group(function () {
 // Guard Routes
 Route::middleware(['auth:sanctum', 'guard'])->group(function () {
     Route::get('/jackets/{guard:username}', [JacketController::class, 'index']);
-    Route::get('/jackets/active', [JacketController::class, 'activeJackets']);
+    Route::get('/jackets/active/{guard:username}', [JacketController::class, 'activeJackets']);
 
 });
 

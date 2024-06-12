@@ -20,9 +20,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(RoleSeeder::class);
+        Role::factory()->state(['id' => 1, 'name' => 'parent'])->create();
 
-        Role::factory(4)->create();
+        Role::factory()->state(['id' => 2, 'name' => 'guard'])->create();
+
+        Role::factory()->state(['id' => 3, 'name' => 'trainer'])->create();
+
         User::factory(4)->create();
         QrCode::factory(4)->create();
         Jacket::factory(4)->create();
