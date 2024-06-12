@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\Enums\Role;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\ResetPasswordRequest;
@@ -32,9 +33,10 @@ class AuthController extends Controller
 
         $validatedData['password'] = Hash::make($validatedData['password']);
 
-        unset($validatedData['confirm_password'], $validatedData['role']);
+        unset($validatedData['confirm_password']);
 
-        switch ($request->input('role')) {
+        $role = $request->input('role');
+        switch ($role) {
             case Role::TRAINER:
                 $user = Trainer::create($validatedData);
                 break;
@@ -45,7 +47,7 @@ class AuthController extends Controller
                 $user = User::create($validatedData);
                 break;
             default:
-                throw new \InvalidArgumentException('Invalid user role.');
+                return response()->json(['message' => 'Invalid user role. Accepted roles are trainer, guard, parent.'], 400);
         }
 
         $token = $user->createToken('authToken')->plainTextToken;

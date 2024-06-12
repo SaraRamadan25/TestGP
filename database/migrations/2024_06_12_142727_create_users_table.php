@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('trainers', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('username')->unique();
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('avatar')->nullable();
             $table->foreignId('area_id')->constrained('areas');
-            $table->text('description');
-            $table->string('availability_times');
+            $table->string('avatar')->nullable();
+
+            $table->foreignId('role_id')->constrained('roles');
 
             $table->timestamps();
         });
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('trainers');
+        Schema::dropIfExists('users');
     }
 };

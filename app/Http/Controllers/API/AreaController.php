@@ -9,10 +9,9 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AreaController extends Controller
 {
-
     public function index(): AnonymousResourceCollection
     {
-        return AreaResource::collection(Area::all());
+        return AreaResource::collection(Area::paginate(10));
     }
     public function show(Area $area): AreaResource
     {

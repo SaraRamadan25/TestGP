@@ -1,17 +1,17 @@
 <?php
 
 use App\Http\Controllers\API\AreaController;
+use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\HealthController;
 use App\Http\Controllers\API\InquiryController;
 use App\Http\Controllers\API\InstructionController;
 use App\Http\Controllers\API\JacketController;
 use App\Http\Controllers\API\LocationController;
+use App\Http\Controllers\API\QrcodeController;
 use App\Http\Controllers\API\SessionController;
 use App\Http\Controllers\API\TrainerController;
 use App\Http\Controllers\API\UserController;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PayPalTransactionController;
-use App\Http\Controllers\QrcodeController;
 use App\Http\Controllers\SocialiteAuthController;
 use Illuminate\Support\Facades\Route;
 

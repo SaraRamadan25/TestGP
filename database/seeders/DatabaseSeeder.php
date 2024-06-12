@@ -20,7 +20,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(RoleSeeder::class);
 
+        Role::factory(4)->create();
         User::factory(4)->create();
         QrCode::factory(4)->create();
         Jacket::factory(4)->create();

@@ -18,7 +18,7 @@ class StoreUserRequest extends FormRequest
             'email'=>'required|email',
             'password'=>'required|min:8',
             'confirm_password' => 'required|same:password',
-            'role'=>'required',
+            'role_id'=>'required',
             'area_id'=>'required|exists:areas,id',
             'description'=>'nullable|max:255',
             'availability_times'=>'nullable|max:255',

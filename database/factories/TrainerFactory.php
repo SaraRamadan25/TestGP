@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Area;
+use App\Models\Role;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -24,6 +25,8 @@ class TrainerFactory extends Factory
             'area_id' => Area::factory(),
             'description' => $this->faker->sentence,
             'availability_times' => $this->faker->sentence,
+            'role_id' => Role::factory(),
+
         ];
     }
 }

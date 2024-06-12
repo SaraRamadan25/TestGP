@@ -21,5 +21,8 @@ class Guard extends Model
     {
         return $this->hasMany(Jacket::class);
     }
-
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
 }

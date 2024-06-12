@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Area;
+use App\Models\Role;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,7 +22,9 @@ class GuardFactory extends Factory
             'username' => $this->faker->unique()->userName,
             'email' => $this->faker->unique()->safeEmail,
             'password' => 'password',
-            'area_id' => Area::factory()
+            'area_id' => Area::factory(),
+            'role_id' => Role::factory(),
+
         ];
     }
 }

@@ -18,6 +18,9 @@ return new class extends Migration
             $table->string('password');
             $table->string('avatar')->nullable();
             $table->foreignId('area_id')->constrained('areas');
+
+            $table->foreignId('role_id')->constrained('roles');
+
             $table->timestamps();
         });
     }
