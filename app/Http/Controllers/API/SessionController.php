@@ -15,36 +15,32 @@ use Illuminate\Support\Facades\Log;
 
 class SessionController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('trainer')->only('TrainerAllSessions');
-    }
     // For Trainers Only
     public function TrainerAllSessions(Trainer $trainer): JsonResponse
     {
         $sessions = Session::where('trainer_id', $trainer->id)->paginate(5);
 
-        return response()->json($sessions, 200);
+        return response()->json($sessions);
     }
-    public function store(StoreSessionRequest $request, $trainerId): JsonResponse
+    public function store(StoreSessionRequest $request, Trainer $trainer): JsonResponse
     {
-        if (!DB::table('trainers')->where('id', $trainerId)->exists()) {
+        if (!DB::table('trainers')->where('username', $trainer->username)->exists()) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
         $validatedData = $request->validated();
-        $validatedData['trainer_id'] = $trainerId;
+        $validatedData['trainer_id'] = $trainer->id;
 
         $session = Session::create($validatedData);
         return response()->json($session, 201);
     }
-    public function destroy($trainerId, Session $session): JsonResponse
+    public function destroy(Trainer $trainer, Session $session): JsonResponse
     {
-        if (!DB::table('trainers')->where('id', $trainerId)->exists()) {
+        if (!DB::table('trainers')->where('username', $trainer->username)->exists()) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
-        if ((int)$trainerId !== (int)$session->trainer_id) {
+        if ($trainer->id !== $session->trainer_id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 

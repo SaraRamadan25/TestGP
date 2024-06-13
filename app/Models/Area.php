@@ -23,8 +23,8 @@ class Area extends Model
         return $this->hasMany(Jacket::class);
     }
 
-    public function climate(): HasOne
+    public function getRouteKeyName(): string
     {
-        return $this->hasOne(Climate::class);
+        return 'name';
     }
 }

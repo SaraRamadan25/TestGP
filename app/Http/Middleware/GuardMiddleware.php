@@ -10,14 +10,16 @@ class GuardMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        $user = $request->user();
+        $user = Auth::user();
 
-        if (!$user instanceof Guard) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+        // Check if the user is a guard
+        if ($user && $user instanceof Guard) {
+            // Check if the authenticated guard is the one making the request
+            if ($request->route('guard')->id === $user->id) {
+                return $next($request);
+            }
         }
 
-        $request->attributes->set('guard', $user);
-
-        return $next($request);
+        return response()->json(['message' => 'Unauthorized'], 403);
     }
 }

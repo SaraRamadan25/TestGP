@@ -6,21 +6,20 @@ use App\Models\Trainer;
 use Closure;
 use GPBMetadata\Google\Api\Log;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class TrainerMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $username = $request->route('username');
+        $trainer = $request->route('trainer');
 
-        $trainer = Trainer::where('username', $username)->first();
-        if (!$trainer) {
-            return response()->json(['message' => 'Trainer not found'], 404);
+        if ($trainer && Auth::check() && Auth::user()->username === $trainer->username) {
+            return $next($request);
         }
 
-        $request->attributes->set('trainer', $trainer);
+        return response()->json(['message' => 'Unauthorized access'], 403);
 
-        return $next($request);
     }
 }

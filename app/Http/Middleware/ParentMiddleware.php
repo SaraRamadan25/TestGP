@@ -14,14 +14,17 @@ class ParentMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-
         $user = Auth::user();
 
-        if (!$user || $user->role_id !== 1) {
-            return response()->json(['message' => 'Forbidden'], 403);
+        // Check if the user is a parent
+        if ($user && $user->role_id === 1) {
+            // Check if the authenticated parent is the one making the request
+            if ($request->route('user')->id === $user->id) {
+                return $next($request);
+            }
         }
 
-        return $next($request);
+        return response()->json(['message' => 'Forbidden'], 403);
     }
 
 }

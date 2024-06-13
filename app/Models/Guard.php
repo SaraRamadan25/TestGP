@@ -26,4 +26,9 @@ class Guard extends Model
     {
         return $this->belongsTo(Role::class, 'role_id');
     }
+
+    public function getRouteKeyName(): string
+    {
+        return 'username';
+    }
 }

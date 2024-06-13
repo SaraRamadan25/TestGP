@@ -26,12 +26,12 @@ Route::get('/instructions', [InstructionController::class, 'index']);
 
 // Common Routes For All ( Parent, Guard, Trainer)
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('user/{username}', [AuthController::class, 'getUserInfo']);
-    Route::delete('user/{username}', [AuthController::class, 'destroy']);
+    Route::get('user/{user:username}', [AuthController::class, 'getUserInfo']);
+    Route::delete('user/{user:username}', [AuthController::class, 'destroy']);
     Route::get('logout', [AuthController::class, 'logout']);
     Route::post('/inquiries', [InquiryController::class,'store']);
     Route::get('/areas', [AreaController::class, 'index']);
-    Route::get('/areas/{area}', [AreaController::class, 'show']);
+    Route::get('/areas/{area:name}', [AreaController::class, 'show']);
 });
 
 // Parent Routes
@@ -39,7 +39,7 @@ Route::middleware(['auth:sanctum', 'parent'])->group(function () {
     Route::post('/health', [HealthController::class, 'store']);
     Route::get('/availableTrainers', [TrainerController::class, 'availableTrainers']);
     Route::post('/sessions/{session}/book', [SessionController::class, 'bookSession']);
-    Route::get('/UserSessions/{user}', [UserController::class, 'UserSessions']);
+    Route::get('/UserSessions/{user:username}', [UserController::class, 'UserSessions']);
     Route::delete('/sessions/cancel/{session}', [SessionController::class, 'CancelSession']);
     Route::get('/share-qrcode', [QrcodeController::class, 'shareQRCode'])->name('share.qrcode');
     Route::get('/check/{modelno}', [JacketController::class, 'check'])->name('check');
@@ -57,7 +57,6 @@ Route::middleware(['auth:sanctum', 'trainer'])->group(function () {
     Route::get('/sessions/{trainer:username}', [SessionController::class, 'TrainerAllSessions']);
     Route::post('/sessions/{trainer:username}', [SessionController::class, 'store']);
     Route::delete('/sessions/{trainer:username}/{session}', [SessionController::class, 'destroy']);
-
 });
 
 // wait for flutter implementation
