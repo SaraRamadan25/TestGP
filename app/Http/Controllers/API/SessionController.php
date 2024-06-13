@@ -6,21 +6,24 @@ use App\Enums\Role;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSessionRequest;
 use App\Models\Session;
+use App\Models\Trainer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class SessionController extends Controller
 {
-    // For Trainers Only
-    public function TrainerAllSessions($trainer): JsonResponse
+    public function __construct()
     {
-        if (!DB::table('trainers')->where('id', $trainer)->exists()) {
-            return response()->json(['error' => 'Unauthorized'], 403);
-        }
+        $this->middleware('trainer')->only('TrainerAllSessions');
+    }
+    // For Trainers Only
+    public function TrainerAllSessions(Trainer $trainer): JsonResponse
+    {
+        $sessions = Session::where('trainer_id', $trainer->id)->paginate(5);
 
-        $sessions = Session::where('trainer_id', $trainer)->paginate(5);
         return response()->json($sessions, 200);
     }
     public function store(StoreSessionRequest $request, $trainerId): JsonResponse

@@ -54,9 +54,10 @@ Route::middleware(['auth:sanctum', 'guard'])->group(function () {
 
 // Trainer Routes
 Route::middleware(['auth:sanctum', 'trainer'])->group(function () {
-    Route::delete('/sessions/{trainer}/{session}', [SessionController::class, 'destroy']);
-    Route::post('/sessions/{trainer}', [SessionController::class, 'store']);
-    Route::get('/sessions/{trainer}', [SessionController::class, 'TrainerAllSessions']);
+    Route::get('/sessions/{trainer:username}', [SessionController::class, 'TrainerAllSessions']);
+    Route::post('/sessions/{trainer:username}', [SessionController::class, 'store']);
+    Route::delete('/sessions/{trainer:username}/{session}', [SessionController::class, 'destroy']);
+
 });
 
 // wait for flutter implementation

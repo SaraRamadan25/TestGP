@@ -2,29 +2,24 @@
 
 namespace App\Http\Middleware;
 
-use App\Enums\Role;
 use App\Models\Trainer;
 use Closure;
+use GPBMetadata\Google\Api\Log;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class TrainerMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
-        $user = $request->user();
+        $username = $request->route('username');
 
-        if (!$user instanceof Trainer) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+        $trainer = Trainer::where('username', $username)->first();
+        if (!$trainer) {
+            return response()->json(['message' => 'Trainer not found'], 404);
         }
 
-        $request->attributes->set('trainer', $user);
+        $request->attributes->set('trainer', $trainer);
 
         return $next($request);
     }

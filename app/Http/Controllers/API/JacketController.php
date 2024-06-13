@@ -16,7 +16,6 @@ class JacketController extends Controller
     {
         $this->middleware('guard')->only('index');
     }
-
     public function check($modelNo): JsonResponse
     {
         $jacket = Jacket::where('modelno', $modelNo)->first();
@@ -48,7 +47,6 @@ class JacketController extends Controller
 
         return response()->json($jackets);
     }
-
     public function activeJackets(Guard $guard): JsonResponse
     {
         $activeJackets = $guard->jackets->where('active', true);
