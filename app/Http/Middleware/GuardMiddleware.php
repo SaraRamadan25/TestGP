@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\Guard;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class GuardMiddleware
 {
@@ -12,9 +13,7 @@ class GuardMiddleware
     {
         $user = Auth::user();
 
-        // Check if the user is a guard
-        if ($user && $user instanceof Guard) {
-            // Check if the authenticated guard is the one making the request
+        if ($user instanceof Guard) {
             if ($request->route('guard')->id === $user->id) {
                 return $next($request);
             }

@@ -11,18 +11,20 @@ use Illuminate\Support\Facades\Auth;
 
 class HealthController extends Controller
 {
-    public function store(StoreHealthRequest $request) :JsonResponse
+    public function store(StoreHealthRequest $request): JsonResponse
     {
-        if (!Auth::check()) {
-            return response()->json(['message' => 'You must be logged in to perform this action'], 401);
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
         }
 
         $validatedData = $request->validated();
-
-        $validatedData['user_id'] = Auth::id();
+        $validatedData['user_id'] = $user->id;
 
         Health::create($validatedData);
 
-        return response()->json(['message' => 'We have saved your health Info !'], 200);
+        return response()->json(['message' => 'We have saved your health info!'], 200);
     }
 }
+
