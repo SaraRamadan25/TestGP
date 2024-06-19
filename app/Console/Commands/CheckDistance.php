@@ -1,6 +1,5 @@
 <?php
 
-// app/Console/Commands/CheckDistance.php
 
 namespace App\Console\Commands;
 

@@ -38,7 +38,7 @@ class HighHeartRateNotification extends Notification
     {
         return (new MailMessage)
             ->subject('High Heart Rate Alert')
-            ->line('Hello!')
+            ->line('Alert!')
             ->line('This is a notification to inform you that a high average heart rate has been detected.')
             ->line('Please take necessary actions and consult a medical professional if needed.')
             ->line('Thank you for your attention.');

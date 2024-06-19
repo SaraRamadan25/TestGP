@@ -1,6 +1,5 @@
 <?php
 
-// app/Console/Commands/CheckHeartRate.php
 
 namespace App\Console\Commands;
 

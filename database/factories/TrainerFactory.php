@@ -26,7 +26,6 @@ class TrainerFactory extends Factory
             'description' => $this->faker->sentence,
             'availability_times' => $this->faker->sentence,
             'role_id' => Role::query()->whereBetween('id', [1, 3])->inRandomOrder()->first()->id,
-
         ];
     }
 }

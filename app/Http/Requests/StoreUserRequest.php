@@ -24,4 +24,24 @@ class StoreUserRequest extends FormRequest
             'description'=>'nullable|max:255',
             'availability_times'=>'nullable|max:255',
         ];
-    }}
+    }
+
+    public function messages(): array
+    {
+        return [
+            'username.required' => 'The username field is required.',
+            'username.max' => 'The username may not be greater than 100 characters.',
+            'email.required' => 'The email field is required.',
+            'email.email' => 'The email must be a valid email address.',
+            'password.required' => 'The password field is required.',
+            'password.min' => 'The password must be at least 8 characters.',
+            'confirm_password.required' => 'The password confirmation is required.',
+            'confirm_password.same' => 'The password confirmation does not match.',
+            'role_id.required' => 'The role ID field is required.',
+            'area_id.required' => 'The area ID field is required.',
+            'area_id.exists' => 'The selected area ID is invalid.',
+            'description.max' => 'The description may not be greater than 255 characters.',
+            'availability_times.max' => 'The availability times may not be greater than 255 characters.',
+        ];
+    }
+}
