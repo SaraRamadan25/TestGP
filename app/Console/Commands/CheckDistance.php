@@ -24,7 +24,7 @@ class CheckDistance extends Command
             if ($distance['distance'] > 10) {
                 $deviceToken = env('DEVICE_TOKEN');
                 $title = 'Alert!';
-                $body = 'Your child is far away from you , please check him/her now!';
+                $body = 'Your child is beyond the 10m limit , please check him/her now!';
 
                 $notification = Notification::fromArray([
                     'title' => $title,

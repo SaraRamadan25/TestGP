@@ -235,6 +235,7 @@ class AuthController extends Controller
 
             $user->health()->delete();
             $user->tokens()->delete();
+            $user->delete();
         }
 
         return response()->json(['message' => 'User deleted successfully'], 200);

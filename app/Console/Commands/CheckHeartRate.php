@@ -24,7 +24,7 @@ class CheckHeartRate extends Command
             if ($sensorsData['healthData']['heartRate'] > 125) {
                 $deviceToken = env('DEVICE_TOKEN');
                 $title = 'Alert!';
-                $body = "Your child's heart rate is too high! , please check him/her now!";
+                $body = "Your child's vital signs are too high! , please check him/her now!";
 
                 $notification = Notification::fromArray([
                     'title' => $title,
