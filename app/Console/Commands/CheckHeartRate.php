@@ -39,7 +39,7 @@ class CheckHeartRate extends Command
 
                 $this->info('Notification sent successfully');
             } else {
-                $this->info('Heart rate is not greater than 125. No notification sent.');
+                $this->info('Vital signs are okay. No notification sent.');
             }
         } catch (FirebaseException $e) {
             $this->error('Firebase Exception: ' . $e->getMessage());
