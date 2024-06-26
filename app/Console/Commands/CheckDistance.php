@@ -19,9 +19,9 @@ class CheckDistance extends Command
         try {
             $factory = app('firebase');
             $database = $factory->createDatabase();
-            $distance = $database->getReference('distance')->getSnapshot()->getValue();
+            $sensorsData = $database->getReference('sensorsData')->getSnapshot()->getValue();
 
-            if ($distance['distance'] > 10) {
+            if ($sensorsData['distance'] > 10) {
                 $deviceToken = env('DEVICE_TOKEN');
                 $title = 'Alert!';
                 $body = 'Your child is beyond the 10m limit , please check him/her now!';
