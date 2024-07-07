@@ -14,7 +14,7 @@ class CheckDistance extends Command
     protected $signature = 'distance:check';
     protected $description = 'Check distance and send notification if condition is met';
 
-    public function handle()
+    public function handle(): void
     {
         try {
             $factory = app('firebase');

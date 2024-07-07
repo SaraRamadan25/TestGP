@@ -14,7 +14,7 @@ class CheckHeartRate extends Command
     protected $signature = 'heart-rate:check';
     protected $description = 'Check heart rate and send notifications if condition is met';
 
-    public function handle()
+    public function handle(): void
     {
         try {
             $factory = app('firebase');
