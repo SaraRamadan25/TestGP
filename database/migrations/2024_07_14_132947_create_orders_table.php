@@ -11,17 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('guards', function (Blueprint $table) {
+        Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('username')->unique();
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->string('avatar')->nullable();
-            $table->foreignId('area_id')->constrained('areas');
-
-            $table->foreignId('role_id')->constrained('roles');
-
+            $table->string('status')->default('');            $table->bigInteger('order_number');
+            $table->integer('quantity');
+            $table->integer('total');
+            $table->date('date');
+            $table->text('details');
+            $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
+
         });
     }
 
@@ -30,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('guards');
+        Schema::dropIfExists('orders');
     }
 };

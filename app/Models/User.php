@@ -43,42 +43,6 @@ protected $guarded = [];
         'password' => 'hashed',
     ];
 
-    public function area(): BelongsTo
-    {
-        return $this->belongsTo(Area::class);
-    }
-
-    public function health() : HasOne
-    {
-        return $this->hasOne(Health::class);
-    }
-
-    public function inquiries(): HasMany
-    {
-        return $this->hasMany(Inquiry::class);
-    }
-
-    public function jackets(): HasMany
-    {
-        return $this->hasMany(Jacket::class);
-    }
-
-
-    public function sessions(): HasMany
-    {
-        return $this->hasMany(Session::class);
-    }
-
-    public function children(): HasMany
-    {
-        return $this->hasMany(Child::class);
-    }
-
-    public function role(): BelongsTo
-    {
-        return $this->belongsTo(Role::class, 'role_id');
-    }
-
     public function getRouteKeyName(): string
     {
         return 'username';

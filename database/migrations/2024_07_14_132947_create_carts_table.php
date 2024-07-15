@@ -11,11 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('qr_codes', function (Blueprint $table) {
+        Schema::create('carts', function (Blueprint $table) {
             $table->id();
-            $table->string('content')->unique();
-            $table->foreignId('jacket_id')->nullable()->constrained('jackets');
+            $table->string('items');
+            $table->integer('total');
+            $table->foreignId('promo_code_id')->constrained('promo_codes');
+
             $table->timestamps();
+
         });
     }
 
@@ -24,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('qr_codes');
+        Schema::dropIfExists('carts');
     }
 };

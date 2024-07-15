@@ -20,14 +20,12 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
-        $area = Area::factory()->create();
 
         return [
-            'username' => fake()->userName(),
+            'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'password' => Hash::make('password'),
-            'area_id' => Area::factory(),
-            'role_id' => Role::query()->whereBetween('id', [1, 3])->inRandomOrder()->first()->id,
+
         ];
     }
 

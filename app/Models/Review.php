@@ -6,13 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Child extends Model
+class Review extends Model
 {
-    protected $fillable= ['name','user_id'];
+    protected $table = 'reviews';
     use HasFactory;
 
-    public function user() :BelongsTo
+    protected $guarded = [];
+
+    public function item(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Item::class);
     }
 }

@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('locations', function (Blueprint $table) {
+        Schema::create('promo_codes', function (Blueprint $table) {
             $table->id();
-            $table->decimal('latitude', 8, 6);
-            $table->decimal('longitude', 9, 6);
-            $table->foreignId('jacket_id')->constrained('jackets');
+            $table->string('code');
+            $table->dateTime('expires_at');
+            $table->integer('percentage');
+
             $table->timestamps();
+
         });
     }
 
@@ -25,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('locations');
+        Schema::dropIfExists('promo_codes');
     }
 };

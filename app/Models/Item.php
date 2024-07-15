@@ -6,14 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Role extends Model
+class Item extends Model
 {
     use HasFactory;
+    protected $guarded = [];
 
-  protected $guarded = [];
-
-    public function users(): HasMany
+    public function reviews(): HasMany
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(Review::class, 'item_id');
     }
 }

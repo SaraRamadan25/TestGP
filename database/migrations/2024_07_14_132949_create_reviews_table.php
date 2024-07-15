@@ -11,18 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('jackets', function (Blueprint $table) {
+        Schema::create('reviews', function (Blueprint $table) {
             $table->id();
-            $table->string('modelno');
-            $table->integer('batteryLevel');
-            $table->dateTime('start_rent_time');
-            $table->dateTime('end_rent_time');
-            $table->boolean('active')->default(0);
+            $table->foreignId('item_id')->constrained('items');
+            $table->integer('rate');
+            $table->text('review');
             $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('area_id')->constrained('areas');
-            $table->foreignId('guard_id')->constrained('guards');
+
             $table->timestamps();
+
         });
+
     }
 
     /**
@@ -30,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('jackets');
+        Schema::dropIfExists('reviews');
     }
 };
