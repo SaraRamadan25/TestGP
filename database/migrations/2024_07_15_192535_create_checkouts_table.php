@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('carts', function (Blueprint $table) {
+        Schema::create('checkouts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
-            $table->json('items');
+            $table->foreignId('user_id')->constrained();
+            $table->text('shipping_address');
+            $table->string('payment_card_number');
+            $table->string('delivery_method');
             $table->integer('total');
-            $table->foreignId('promo_code_id')->nullable()->constrained('promo_codes');
-            $table->integer('total_after_discount')->nullable();
-
+            $table->integer('delivery_fee');
+            $table->integer('total_after_delivery');
             $table->timestamps();
-
         });
     }
 
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('carts');
+        Schema::dropIfExists('checkouts');
     }
 };

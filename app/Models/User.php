@@ -43,8 +43,24 @@ protected $guarded = [];
         'password' => 'hashed',
     ];
 
-    public function getRouteKeyName(): string
+
+    public function reviews(): HasMany
     {
-        return 'username';
+        return $this->hasMany(Review::class);
+    }
+
+    public function favorites(): HasMany
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function cart(): HasOne
+    {
+        return $this->hasOne(Cart::class);
     }
 }

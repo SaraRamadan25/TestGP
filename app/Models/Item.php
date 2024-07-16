@@ -15,4 +15,9 @@ class Item extends Model
     {
         return $this->hasMany(Review::class, 'item_id');
     }
+
+    public function favorites(): HasMany
+    {
+        return $this->hasMany(Favorite::class, 'item_id');
+    }
 }
