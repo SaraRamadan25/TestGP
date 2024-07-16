@@ -63,4 +63,14 @@ protected $guarded = [];
     {
         return $this->hasOne(Cart::class);
     }
+
+    public function notificationSetting(): HasOne
+    {
+        return $this->hasOne(NotificationSetting::class);
+    }
+    public function checkouts(): HasMany
+    {
+        return $this->hasMany(Checkout::class);
+    }
+
 }

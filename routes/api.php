@@ -4,9 +4,10 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ItemController;
 
+use App\Http\Controllers\NotificationSettingController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ReviewController;
-use App\Http\Resources\Review\ReviewCollection;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('register', [AuthController::class, 'register']);
@@ -25,4 +26,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('favorites/{item}', [ItemController::class, 'addFavorite']);
     Route::get('favorites', [ItemController::class, 'getFavorites']);
     Route::get('reviews', [ReviewController::class, 'index']);
+
+    Route::get('user', [UserController::class, 'show']);
+    Route::post('user', [UserController::class, 'update']);
+    Route::get('notification-settings', [NotificationSettingController::class, 'show']);
+    Route::put('notification-settings', [NotificationSettingController::class, 'update']);
 });
