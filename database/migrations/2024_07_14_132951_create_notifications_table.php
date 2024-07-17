@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->text('title');
             $table->text('description');
-            $table->boolean('read');
+            $table->boolean('read')->default(false);
             $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('order_id')->nullable()->constrained('orders');
 
             $table->timestamps();
 

@@ -4,8 +4,10 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ItemController;
 
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\NotificationSettingController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -22,7 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('carts/{id}/add', [CartController::class, 'addItem']);
     Route::get('carts/{id}/items', [CartController::class, 'getCartItems']);
     Route::delete('carts/{id}/items/{itemId}', [CartController::class, 'removeItem']);
-    Route::post('/cart/{id}/checkout', [OrderController::class, 'checkout']);
+    Route::post('cart/{id}/checkout', [OrderController::class, 'checkout']);
     Route::post('favorites/{item}', [ItemController::class, 'addFavorite']);
     Route::get('favorites', [ItemController::class, 'getFavorites']);
     Route::get('reviews', [ReviewController::class, 'index']);
@@ -31,4 +33,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('user', [UserController::class, 'update']);
     Route::get('notification-settings', [NotificationSettingController::class, 'show']);
     Route::put('notification-settings', [NotificationSettingController::class, 'update']);
+
+    Route::get('delivered-orders', [OrderController::class, 'deliveredOrders']);
+    Route::get('all-shipping-addresses', [OrderController::class, 'allShippingAddresses']);
+    Route::post('add-shipping-address', [OrderController::class, 'addShippingAddress']);
+
+    Route::get('notifications', [NotificationController::class, 'getNotifications']);
+    Route::post('notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead']);
+
+    Route::post('/payment-methods', [PaymentMethodController::class, 'store']);
+
+
 });

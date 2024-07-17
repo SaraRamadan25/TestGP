@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Order\OrderCollection;
 use App\Models\Cart;
 use App\Models\Checkout;
+use App\Models\Notification;
 use App\Models\Order;
 use App\Models\Promocode;
 use Illuminate\Http\JsonResponse;
@@ -16,7 +18,8 @@ class OrderController extends Controller
     public function checkout(Request $request, $id): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'shipping_address' => 'required|string|max:255',
+            'shipping_address' => 'required|array',
+            'shipping_address.*' => 'required|string|max:255',
             'payment_card_number' => 'required|string|max:16',
         ]);
 
@@ -46,7 +49,7 @@ class OrderController extends Controller
 
         $checkout = Checkout::create([
             'user_id' => $user->id,
-            'shipping_address' => $shippingAddress,
+            'shipping_address' => json_encode($shippingAddress),
             'payment_card_number' => $request->input('payment_card_number'),
             'delivery_method' => $deliveryMethod,
             'total' => $cart->total,
@@ -65,17 +68,119 @@ class OrderController extends Controller
         ]);
     }
 
-    private function calculateDeliveryFee($shippingAddress): float
+    private function calculateDeliveryFee(array $shippingAddresses): float
     {
-        $address = strtolower($shippingAddress);
-        if (str_contains($address, 'dakehlia')) {
-            return 30.00;
-        } elseif (str_contains($address, 'gharbia')) {
-            return 50.00;
-        } elseif (str_contains($address, 'cairo')) {
-            return 40.00;
-        } elseif (str_contains($address, 'alex')) {
-            return 40.00;
+        $totalFee = 0;
+        foreach ($shippingAddresses as $address) {
+            $address = strtolower($address);
+            if (str_contains($address, 'dakehlia')) {
+                $totalFee += 30.00;
+            } elseif (str_contains($address, 'gharbia')) {
+                $totalFee += 50.00;
+            } elseif (str_contains($address, 'cairo')) {
+                $totalFee += 40.00;
+            } elseif (str_contains($address, 'alex')) {
+                $totalFee += 40.00;
+            } else {
+                $totalFee += 60.00;
+            }
         }
-        return 60.00;
-    }}
+        return $totalFee;
+    }
+
+    public function deliveredOrders(): OrderCollection
+    {
+        $user = Auth::user();
+
+        $orders = Order::where('user_id', $user->id)
+            ->where('status', 'delivered')
+            ->get();
+
+        return new OrderCollection($orders);
+    }
+
+    public function allShippingAddresses(): JsonResponse
+    {
+        $user = Auth::user();
+
+        $checkouts = Checkout::where('user_id', $user->id)
+            ->select('shipping_address')
+            ->distinct()
+            ->get();
+
+        $addresses = [];
+        foreach ($checkouts as $checkout) {
+            $decodedAddresses = json_decode($checkout->shipping_address, true);
+            if (is_array($decodedAddresses)) {
+                $addresses = array_merge($addresses, $decodedAddresses);
+            }
+        }
+
+        $uniqueAddresses = array_unique($addresses);
+
+        return response()->json(['shipping_addresses' => $uniqueAddresses]);
+    }
+
+    public function addShippingAddress(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'shipping_address' => 'required|array',
+            'shipping_address.*' => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $user = Auth::user();
+
+        $checkout = Checkout::create([
+            'user_id' => $user->id,
+            'shipping_address' => json_encode($request->input('shipping_address')),
+            'payment_card_number' => '0000000000000000',
+            'delivery_method' => 'paypal',
+            'total' => 0,
+            'delivery_fee' => 0,
+            'total_after_delivery' => 0,
+        ]);
+
+        return response()->json(['shipping_address' => $checkout->shipping_address]);
+    }
+
+    public function markAsDelivered($orderId): JsonResponse
+    {
+        $order = Order::findOrFail($orderId);
+        $order->status = 'delivered';
+        $order->save();
+
+        Notification::create([
+            'user_id' => $order->user_id,
+            'title' => 'Your order #' . $order->id . ' has been delivered',
+            'message' => 'Your order has been successfully delivered. Thank you for shopping with us!',
+            'type' => 'order_delivered',
+            'status' => 'new',
+        ]);
+
+        return response()->json(['message' => 'Order marked as delivered']);
+    }
+
+    public function markAsCancelled($orderId): JsonResponse
+    {
+        $order = Order::findOrFail($orderId);
+        $order->status = 'cancelled';
+        $order->save();
+
+        // Create a notification
+        Notification::create([
+            'user_id' => $order->user_id,
+            'title' => 'Your order #' . $order->id . ' has been cancelled',
+            'message' => 'Your order has been cancelled. If you have any questions, please contact our support.',
+            'type' => 'order_cancelled',
+            'status' => 'new',
+        ]);
+
+        return response()->json(['message' => 'Order marked as cancelled']);
+    }
+}
+
+

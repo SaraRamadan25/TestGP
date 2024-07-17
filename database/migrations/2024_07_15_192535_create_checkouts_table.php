@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('checkouts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->text('shipping_address');
+            $table->json('shipping_address');
             $table->string('payment_card_number');
             $table->string('delivery_method');
             $table->integer('total');
