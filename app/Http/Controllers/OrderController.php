@@ -8,6 +8,7 @@ use App\Models\Checkout;
 use App\Models\Notification;
 use App\Models\Order;
 use App\Models\Promocode;
+use App\Models\ShippingAddress;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,8 +19,7 @@ class OrderController extends Controller
     public function checkout(Request $request, $id): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'shipping_address' => 'required|array',
-            'shipping_address.*' => 'required|string|max:255',
+            'shipping_address_id' => 'required|exists:shipping_addresses,id',
             'payment_card_number' => 'required|string|max:16',
         ]);
 
@@ -34,7 +34,7 @@ class OrderController extends Controller
             return response()->json(['error' => 'Cart or User not found'], 404);
         }
 
-        $shippingAddress = $request->input('shipping_address');
+        $shippingAddress = ShippingAddress::findOrFail($request->input('shipping_address_id'));
         $deliveryMethod = 'paypal';
         $deliveryFee = $this->calculateDeliveryFee($shippingAddress);
 
@@ -49,7 +49,7 @@ class OrderController extends Controller
 
         $checkout = Checkout::create([
             'user_id' => $user->id,
-            'shipping_address' => json_encode($shippingAddress),
+            'shipping_address_id' => $shippingAddress->id,
             'payment_card_number' => $request->input('payment_card_number'),
             'delivery_method' => $deliveryMethod,
             'total' => $cart->total,
@@ -59,7 +59,7 @@ class OrderController extends Controller
 
         return response()->json([
             'user_name' => $user->name,
-            'shipping_address' => $checkout->shipping_address,
+            'shipping_address' => $shippingAddress,
             'payment_card_number' => $checkout->payment_card_number,
             'delivery_method' => $checkout->delivery_method,
             'total_amount' => $checkout->total,
@@ -68,26 +68,24 @@ class OrderController extends Controller
         ]);
     }
 
-    private function calculateDeliveryFee(array $shippingAddresses): float
+    private function calculateDeliveryFee(ShippingAddress $shippingAddress): float
     {
         $totalFee = 0;
-        foreach ($shippingAddresses as $address) {
-            $address = strtolower($address);
-            if (str_contains($address, 'dakehlia')) {
-                $totalFee += 30.00;
-            } elseif (str_contains($address, 'gharbia')) {
-                $totalFee += 50.00;
-            } elseif (str_contains($address, 'cairo')) {
-                $totalFee += 40.00;
-            } elseif (str_contains($address, 'alex')) {
-                $totalFee += 40.00;
-            } else {
-                $totalFee += 60.00;
-            }
+        // Assuming 'address' is a field on the ShippingAddress model. Adjust if necessary.
+        $address = strtolower($shippingAddress->address);
+        if (str_contains($address, 'dakehlia')) {
+            $totalFee += 30.00;
+        } elseif (str_contains($address, 'gharbia')) {
+            $totalFee += 50.00;
+        } elseif (str_contains($address, 'cairo')) {
+            $totalFee += 40.00;
+        } elseif (str_contains($address, 'alex')) {
+            $totalFee += 40.00;
+        } else {
+            $totalFee += 60.00;
         }
         return $totalFee;
     }
-
     public function deliveredOrders(): OrderCollection
     {
         $user = Auth::user();

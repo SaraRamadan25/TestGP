@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CityController;
+use App\Http\Controllers\CountryController;
+use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\ItemController;
 
 use App\Http\Controllers\NotificationController;
@@ -9,6 +12,7 @@ use App\Http\Controllers\NotificationSettingController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\ShippingAddressController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -43,5 +47,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/payment-methods', [PaymentMethodController::class, 'store']);
 
+    Route::get('shipping-addresses', [ShippingAddressController::class, 'index']);
+    Route::post('shipping-addresses', [ShippingAddressController::class, 'store']);
+    Route::get('shipping-addresses/{id}', [ShippingAddressController::class, 'show']);
+    Route::put('shipping-addresses/{id}', [ShippingAddressController::class, 'update']);
 
+    Route::get('cities', [CityController::class, 'getCities']);
+    Route::get('countries', [CountryController::class, 'getCountries']);
+    Route::get('districts', [DistrictController::class, 'getAllDistricts']);
+    Route::get('districts/{city}', [DistrictController::class, 'getDistricts']);
 });

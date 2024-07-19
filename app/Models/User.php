@@ -72,5 +72,9 @@ protected $guarded = [];
     {
         return $this->hasMany(Checkout::class);
     }
+    public function shippingAddresses()
+    {
+        return $this->hasMany(ShippingAddress::class);
+    }
 
 }
