@@ -24,7 +24,6 @@ class CartController extends Controller
             $itemModel = Item::findOrFail($item['item_id']);
             $total += $itemModel->price * $item['quantity'];
 
-            // Check if item already exists in the cart
             if (isset($cartItems[$item['item_id']])) {
                 $cartItems[$item['item_id']]['quantity'] += $item['quantity'];
             } else {
@@ -39,7 +38,7 @@ class CartController extends Controller
         $totalAfterDiscount = null;
 
         if ($promoCodeId) {
-            $promoCode = PromoCode::findOrFail($promoCodeId);
+            $promoCode = Promocode::findOrFail($promoCodeId);
             $discountPercentage = $promoCode->percentage;
             $discountAmount = ($total * $discountPercentage) / 100;
             $totalAfterDiscount = $total - $discountAmount;
