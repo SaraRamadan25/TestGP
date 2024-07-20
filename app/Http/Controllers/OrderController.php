@@ -27,24 +27,20 @@ class OrderController extends Controller
         $deliveryMethod = 'paypal';
         $deliveryFee = $this->calculateDeliveryFee($shippingAddress);
 
-        $totalAfterDelivery = $cart->total + $deliveryFee;
-        $totalAfterDiscount = $cart->total;
-
-        if ($cart->promo_code_id !== null) {
-            $promoCode = Promocode::findOrFail($cart->promo_code_id);
-            $discountPercentage = $promoCode->percentage;
-            $discountAmount = ($cart->total * $discountPercentage) / 100;
-            $totalAfterDiscount = $cart->total - $discountAmount;
-            $totalAfterDelivery = $totalAfterDiscount + $deliveryFee;
+        if ($cart->promo_code_id) {
+            $totalAmount = $cart->total_after_discount ?? $cart->total;
+        } else {
+            $totalAmount = $cart->total;
         }
+
+        $totalAfterDelivery = $totalAmount + $deliveryFee;
 
         $checkout = Checkout::create([
             'user_id' => $user->id,
             'shipping_address_id' => $shippingAddress->id,
             'payment_card_number' => $request->input('payment_card_number'),
             'delivery_method' => $deliveryMethod,
-            'total' => $cart->total,
-            'total_after_discount' => $totalAfterDiscount,
+            'total' => $totalAmount,
             'delivery_fee' => $deliveryFee,
             'total_after_delivery' => $totalAfterDelivery,
         ]);
@@ -55,7 +51,6 @@ class OrderController extends Controller
             'payment_card_number' => $checkout->payment_card_number,
             'delivery_method' => $checkout->delivery_method,
             'total_amount' => $checkout->total,
-            'total_after_discount' => $checkout->total_after_discount,
             'delivery_fee' => $checkout->delivery_fee,
             'total_after_delivery' => $checkout->total_after_delivery,
         ]);
@@ -80,15 +75,15 @@ class OrderController extends Controller
     }
 
     public function deliveredOrders(): OrderCollection
-    {
-        $user = Auth::user();
+        {
+            $user = Auth::user();
 
-        $orders = Order::where('user_id', $user->id)
-            ->where('status', 'delivered')
-            ->get();
+            $orders = Order::where('user_id', $user->id)
+                ->where('status', 'delivered')
+                ->get();
 
-        return new OrderCollection($orders);
-    }
+            return new OrderCollection($orders);
+        }
 
     public function markAsDelivered($orderId): JsonResponse
     {
