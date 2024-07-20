@@ -8,6 +8,7 @@ class Cart extends Model
 {
     use HasFactory;
 
+    public mixed $promo_code_id;
     protected $guarded = [];
 
     public function items()
