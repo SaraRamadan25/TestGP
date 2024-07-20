@@ -11,7 +11,6 @@ use App\Models\Order;
 use App\Models\Promocode;
 use App\Models\ShippingAddress;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
@@ -29,12 +28,14 @@ class OrderController extends Controller
         $deliveryFee = $this->calculateDeliveryFee($shippingAddress);
 
         $totalAfterDelivery = $cart->total + $deliveryFee;
+        $totalAfterDiscount = $cart->total;
 
-        if (isset($cart->promo_code_id)) {
+        if ($cart->promo_code_id) {
             $promoCode = Promocode::findOrFail($cart->promo_code_id);
             $discountPercentage = $promoCode->percentage;
             $discountAmount = ($cart->total * $discountPercentage) / 100;
-            $totalAfterDelivery -= $discountAmount;
+            $totalAfterDiscount = $cart->total - $discountAmount;
+            $totalAfterDelivery = $totalAfterDiscount + $deliveryFee;
         }
 
         $checkout = Checkout::create([
@@ -43,6 +44,7 @@ class OrderController extends Controller
             'payment_card_number' => $request->input('payment_card_number'),
             'delivery_method' => $deliveryMethod,
             'total' => $cart->total,
+            'total_after_discount' => $totalAfterDiscount,
             'delivery_fee' => $deliveryFee,
             'total_after_delivery' => $totalAfterDelivery,
         ]);
@@ -53,6 +55,7 @@ class OrderController extends Controller
             'payment_card_number' => $checkout->payment_card_number,
             'delivery_method' => $checkout->delivery_method,
             'total_amount' => $checkout->total,
+            'total_after_discount' => $checkout->total_after_discount,
             'delivery_fee' => $checkout->delivery_fee,
             'total_after_delivery' => $checkout->total_after_delivery,
         ]);
