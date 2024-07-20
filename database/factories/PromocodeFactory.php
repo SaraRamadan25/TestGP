@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PromoCode>
  */
-class PromoCodeFactory extends Factory
+class PromocodeFactory extends Factory
 {
     protected $model = Promocode::class;
 
