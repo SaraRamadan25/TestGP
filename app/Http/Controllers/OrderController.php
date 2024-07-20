@@ -30,7 +30,7 @@ class OrderController extends Controller
         $totalAfterDelivery = $cart->total + $deliveryFee;
         $totalAfterDiscount = $cart->total;
 
-        if ($cart->promo_code_id) {
+        if ($cart->promo_code_id !== null) {
             $promoCode = Promocode::findOrFail($cart->promo_code_id);
             $discountPercentage = $promoCode->percentage;
             $discountAmount = ($cart->total * $discountPercentage) / 100;
