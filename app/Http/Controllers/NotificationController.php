@@ -29,21 +29,10 @@ class NotificationController extends Controller
 
         return response()->json($notifications);
     }
-    public function markAsRead($id): JsonResponse
+    public function markAsRead(Notification $notification): JsonResponse
     {
-        $user = Auth::user();
+        $notification->read = true;
+        $notification->save();
 
-        $notification = Notification::where('id', $id)
-            ->where('user_id', $user->id)
-            ->first();
-
-        if ($notification) {
-            $notification->read = true;
-            $notification->save();
-
-            return response()->json(['message' => 'Notification marked as read']);
-        } else {
-            return response()->json(['error' => 'Notification not found or unauthorized'], 404);
-        }
-    }
-}
+        return response()->json(['message' => 'Notification marked as read']);
+    }}

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CheckoutRequest;
 use App\Http\Resources\Order\OrderCollection;
 use App\Models\Cart;
 use App\Models\Checkout;
@@ -16,22 +17,12 @@ use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
-    public function checkout(Request $request, $id): JsonResponse
+    public function checkout(CheckoutRequest $request, Cart $cart): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'shipping_address_id' => 'required|exists:shipping_addresses,id',
-            'payment_card_number' => 'required|string|max:16',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
         $user = Auth::user();
-        $cart = Cart::findOrFail($id);
 
-        if (!$cart || !$user) {
-            return response()->json(['error' => 'Cart or User not found'], 404);
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
         }
 
         $shippingAddress = ShippingAddress::findOrFail($request->input('shipping_address_id'));
@@ -64,14 +55,12 @@ class OrderController extends Controller
             'delivery_method' => $checkout->delivery_method,
             'total_amount' => $checkout->total,
             'delivery_fee' => $checkout->delivery_fee,
-            'total_after_delivery' => $checkout->total_after_delivery
+            'total_after_delivery' => $checkout->total_after_delivery,
         ]);
     }
-
     private function calculateDeliveryFee(ShippingAddress $shippingAddress): float
     {
         $totalFee = 0;
-        // Assuming 'address' is a field on the ShippingAddress model. Adjust if necessary.
         $address = strtolower($shippingAddress->address);
         if (str_contains($address, 'dakehlia')) {
             $totalFee += 30.00;
@@ -95,54 +84,6 @@ class OrderController extends Controller
             ->get();
 
         return new OrderCollection($orders);
-    }
-
-    public function allShippingAddresses(): JsonResponse
-    {
-        $user = Auth::user();
-
-        $checkouts = Checkout::where('user_id', $user->id)
-            ->select('shipping_address')
-            ->distinct()
-            ->get();
-
-        $addresses = [];
-        foreach ($checkouts as $checkout) {
-            $decodedAddresses = json_decode($checkout->shipping_address, true);
-            if (is_array($decodedAddresses)) {
-                $addresses = array_merge($addresses, $decodedAddresses);
-            }
-        }
-
-        $uniqueAddresses = array_unique($addresses);
-
-        return response()->json(['shipping_addresses' => $uniqueAddresses]);
-    }
-
-    public function addShippingAddress(Request $request): JsonResponse
-    {
-        $validator = Validator::make($request->all(), [
-            'shipping_address' => 'required|array',
-            'shipping_address.*' => 'required|string|max:255',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $user = Auth::user();
-
-        $checkout = Checkout::create([
-            'user_id' => $user->id,
-            'shipping_address' => json_encode($request->input('shipping_address')),
-            'payment_card_number' => '0000000000000000',
-            'delivery_method' => 'paypal',
-            'total' => 0,
-            'delivery_fee' => 0,
-            'total_after_delivery' => 0,
-        ]);
-
-        return response()->json(['shipping_address' => $checkout->shipping_address]);
     }
 
     public function markAsDelivered($orderId): JsonResponse

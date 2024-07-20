@@ -71,7 +71,6 @@ class ItemController extends Controller
 
         $favorites = Favorite::where('user_id', $user->id)->get();
 
-        // Prepare an array to store detailed item information
         $detailedFavorites = [];
 
         foreach ($favorites as $favorite) {

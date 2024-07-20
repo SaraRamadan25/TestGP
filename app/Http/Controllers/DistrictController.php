@@ -9,11 +9,12 @@ use Illuminate\Http\Request;
 
 class DistrictController extends Controller
 {
-    public function getDistricts($cityId): JsonResponse
+    public function getDistricts(City $city): JsonResponse
     {
-        $districts = District::where('city_id', $cityId)->get();
+        $districts = District::where('city_id', $city->id)->get();
         return response()->json($districts);
     }
+
     public function getAllDistricts(): JsonResponse
     {
         $districts = District::all();

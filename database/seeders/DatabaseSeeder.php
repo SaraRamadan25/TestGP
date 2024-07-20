@@ -2,6 +2,9 @@
 namespace Database\Seeders;
 
 use App\Models\Item;
+use App\Models\Notification;
+use App\Models\Promocode;
+use App\Models\Review;
 use App\Models\ShippingAddress;
 use Illuminate\Database\Seeder;
 use App\Models\Country;
@@ -30,5 +33,8 @@ class DatabaseSeeder extends Seeder
 
         Item::factory(5)->create();
         ShippingAddress::factory(5)->create();
+        Promocode::factory()->create();
+        Review::factory(5)->create();
+        Notification::factory(5)->create();
     }
 }

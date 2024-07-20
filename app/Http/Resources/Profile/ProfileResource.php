@@ -20,7 +20,7 @@ class ProfileResource extends JsonResource
             'email' => $this->email,
             'avatar' => $this->avatar,
             'orders_count' => $this->orders()->count(),
-            'shipping_addresses' => $this->checkouts()->distinct()->pluck('shipping_address'),
+            'shipping_addresses' => $this->shippingAddresses,
             'payment_methods_count' => $this->checkouts()->distinct('payment_card_number')->count(),
             'reviews_count' => $this->reviews()->count(),
             'settings' => [

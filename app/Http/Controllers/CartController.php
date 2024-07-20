@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCartRequest;
 use App\Models\Cart;
 use App\Models\Item;
 use App\Models\PromoCode;
@@ -12,26 +13,26 @@ use Illuminate\Support\Facades\Validator;
 
 class CartController extends Controller
 {
-    public function store(Request $request): JsonResponse
+    public function store(StoreCartRequest $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'items' => 'required|array',
-            'items.*.item_id' => 'required|exists:items,id',
-            'items.*.quantity' => 'required|integer|min:1',
-            'promo_code_id' => 'nullable|exists:promo_codes,id',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
         $user = Auth::user();
         $items = $request->input('items', []);
         $total = 0;
+        $cartItems = [];
 
         foreach ($items as $item) {
             $itemModel = Item::findOrFail($item['item_id']);
             $total += $itemModel->price * $item['quantity'];
+
+            // Check if item already exists in the cart
+            if (isset($cartItems[$item['item_id']])) {
+                $cartItems[$item['item_id']]['quantity'] += $item['quantity'];
+            } else {
+                $cartItems[$item['item_id']] = [
+                    'item_id' => $item['item_id'],
+                    'quantity' => $item['quantity']
+                ];
+            }
         }
 
         $promoCodeId = $request->input('promo_code_id');
@@ -46,7 +47,7 @@ class CartController extends Controller
 
         $cart = Cart::create([
             'user_id' => $user ? $user->id : null,
-            'items' => json_encode($items),
+            'items' => json_encode(array_values($cartItems)),
             'total' => $total,
             'promo_code_id' => $promoCodeId,
             'total_after_discount' => $totalAfterDiscount,
@@ -54,14 +55,9 @@ class CartController extends Controller
 
         return response()->json($cart);
     }
-    public function getCartItems($id): JsonResponse
+
+    public function getCartItems(Cart $cart): JsonResponse
     {
-        $cart = Cart::find($id);
-
-        if (!$cart) {
-            return response()->json(['message' => 'Cart not found'], 404);
-        }
-
         $items = json_decode($cart->items, true);
         $detailedItems = [];
 
@@ -79,9 +75,8 @@ class CartController extends Controller
 
         return response()->json($detailedItems);
     }
-    public function addItem(Request $request, $id): JsonResponse
+    public function addItem(Request $request, Cart $cart): JsonResponse
     {
-        $cart = Cart::findOrFail($id);
         $itemId = $request->input('item_id');
         $quantity = $request->input('quantity', 1);
 
@@ -116,14 +111,13 @@ class CartController extends Controller
 
         return response()->json($cart);
     }
-    public function removeItem($id, $itemId): JsonResponse
+    public function removeItem(Cart $cart, Item $item): JsonResponse
     {
-        $cart = Cart::findOrFail($id);
-        $itemIds = json_decode($cart->items, true);
+        $items = json_decode($cart->items, true);
         $itemIndex = -1;
 
-        foreach ($itemIds as $index => $item) {
-            if ($item['item_id'] == $itemId) {
+        foreach ($items as $index => $cartItem) {
+            if ($cartItem['item_id'] == $item->id) {
                 $itemIndex = $index;
                 break;
             }
@@ -133,8 +127,7 @@ class CartController extends Controller
             return response()->json(['error' => 'Item not found in cart'], 404);
         }
 
-        $item = Item::findOrFail($itemIds[$itemIndex]['item_id']);
-        $cart->total -= $item->price * $itemIds[$itemIndex]['quantity'];
+        $cart->total -= $item->price * $items[$itemIndex]['quantity'];
 
         if ($cart->promo_code_id) {
             $promoCode = PromoCode::findOrFail($cart->promo_code_id);
@@ -143,10 +136,11 @@ class CartController extends Controller
             $cart->total_after_discount = $cart->total - $discountAmount;
         }
 
-        array_splice($itemIds, $itemIndex, 1);
-        $cart->items = json_encode($itemIds);
+        array_splice($items, $itemIndex, 1);
+        $cart->items = json_encode($items);
         $cart->save();
 
         return response()->json($cart);
     }
+
 }

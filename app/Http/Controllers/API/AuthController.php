@@ -64,20 +64,4 @@ class AuthController extends Controller
         return response()->json($loginResponse, $statusCode);
     }
 
-    /*
-    public function getUserInfo($username): UserResource|JsonResponse
-    {
-        if (!auth()->check()) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-
-        $authenticatedUser = User::where('username', $username)->first();
-
-        if (!$authenticatedUser || auth()->user()->username !== $username) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-
-        return new UserResource($authenticatedUser);
-    }
-    */
 }

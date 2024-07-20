@@ -2,11 +2,13 @@
 
 namespace App\Providers;
 
+use App\Models\ShippingAddress;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -26,6 +28,12 @@ class RouteServiceProvider extends ServiceProvider
     {
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+        });
+
+        // Route model binding
+        Route::bind('shipping_address', function ($value) {
+            $user = Auth::user();
+            return $user->shippingAddresses()->findOrFail($value);
         });
 
         $this->routes(function () {
