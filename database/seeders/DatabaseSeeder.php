@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
 
         Item::factory(5)->create();
         ShippingAddress::factory(5)->create();
-        PromoCode::factory()->create();
+        Promocode::factory()->create();
         Review::factory(5)->create();
         Notification::factory(5)->create();
     }

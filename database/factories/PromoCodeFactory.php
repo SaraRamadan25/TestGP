@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Promocode;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -10,6 +11,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class PromoCodeFactory extends Factory
 {
+    protected $model = Promocode::class;
+
     /**
      * Define the model's default state.
      *
