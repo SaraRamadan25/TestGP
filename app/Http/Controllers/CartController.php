@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCartRequest;
 use App\Models\Cart;
 use App\Models\Item;
-use App\Models\PromoCode;
+use App\Models\Promocode;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -100,7 +100,7 @@ class CartController extends Controller
         $cart->total += $item->price * $quantity;
 
         if ($cart->promo_code_id) {
-            $promoCode = PromoCode::findOrFail($cart->promo_code_id);
+            $promoCode = promocode::findOrFail($cart->promo_code_id);
             $discountPercentage = $promoCode->percentage;
             $discountAmount = ($cart->total * $discountPercentage) / 100;
             $cart->total_after_discount = $cart->total - $discountAmount;
@@ -129,7 +129,7 @@ class CartController extends Controller
         $cart->total -= $item->price * $items[$itemIndex]['quantity'];
 
         if ($cart->promo_code_id) {
-            $promoCode = PromoCode::findOrFail($cart->promo_code_id);
+            $promoCode = promocode::findOrFail($cart->promo_code_id);
             $discountPercentage = $promoCode->percentage;
             $discountAmount = ($cart->total * $discountPercentage) / 100;
             $cart->total_after_discount = $cart->total - $discountAmount;
