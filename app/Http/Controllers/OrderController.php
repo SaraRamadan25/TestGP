@@ -13,7 +13,6 @@ use App\Models\ShippingAddress;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
@@ -31,7 +30,7 @@ class OrderController extends Controller
 
         $totalAfterDelivery = $cart->total + $deliveryFee;
 
-        if ($cart->promo_code_id) {
+        if (isset($cart->promo_code_id)) {
             $promoCode = Promocode::findOrFail($cart->promo_code_id);
             $discountPercentage = $promoCode->percentage;
             $discountAmount = ($cart->total * $discountPercentage) / 100;
@@ -58,6 +57,7 @@ class OrderController extends Controller
             'total_after_delivery' => $checkout->total_after_delivery,
         ]);
     }
+
     private function calculateDeliveryFee(ShippingAddress $shippingAddress): float
     {
         $totalFee = 0;
@@ -75,6 +75,7 @@ class OrderController extends Controller
         }
         return $totalFee;
     }
+
     public function deliveredOrders(): OrderCollection
     {
         $user = Auth::user();
@@ -109,7 +110,6 @@ class OrderController extends Controller
         $order->status = 'cancelled';
         $order->save();
 
-        // Create a notification
         Notification::create([
             'user_id' => $order->user_id,
             'title' => 'Your order #' . $order->id . ' has been cancelled',
@@ -121,5 +121,3 @@ class OrderController extends Controller
         return response()->json(['message' => 'Order marked as cancelled']);
     }
 }
-
-
