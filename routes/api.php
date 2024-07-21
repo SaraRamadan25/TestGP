@@ -18,12 +18,15 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
+Route::post('forgot-password', [AuthController::class, 'forgot']);
+Route::post('reset-password', [AuthController::class, 'reset']);
 
 Route::get('popular', [ItemController::class, 'popular']);
 Route::get('items/filter', [ItemController::class, 'filterItems']);
 Route::get('items/{item}', [ItemController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('logout', [AuthController::class, 'logout']);
     Route::post('carts', [CartController::class, 'store']);
     Route::post('carts/{cart}/add', [CartController::class, 'addItem']);
     Route::get('carts/{cart}/items', [CartController::class, 'getCartItems']);
@@ -39,6 +42,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('notification-settings', [NotificationSettingController::class, 'update']);
 
     Route::get('delivered-orders', [OrderController::class, 'deliveredOrders']);
+    Route::get('processing-orders', [OrderController::class, 'processingOrders']);
+    Route::get('cancelled-orders', [OrderController::class, 'cancelledOrders']);
 
     Route::get('notifications', [NotificationController::class, 'getNotifications']);
     Route::post('notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead']);

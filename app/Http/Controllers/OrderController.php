@@ -84,6 +84,26 @@ class OrderController extends Controller
 
             return new OrderCollection($orders);
         }
+    public function processingOrders(): OrderCollection
+    {
+        $user = Auth::user();
+
+        $orders = Order::where('user_id', $user->id)
+            ->where('status', 'processing')
+            ->get();
+
+        return new OrderCollection($orders);
+    }
+    public function cancelledOrders(): OrderCollection
+    {
+        $user = Auth::user();
+
+        $orders = Order::where('user_id', $user->id)
+            ->where('status', 'cancelled')
+            ->get();
+
+        return new OrderCollection($orders);
+    }
 
     public function markAsDelivered($orderId): JsonResponse
     {

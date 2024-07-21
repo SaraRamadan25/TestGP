@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('status')->default('');            $table->bigInteger('order_number');
+            $table->string('status')->default('processing');
+            $table->bigInteger('order_number');
             $table->integer('quantity');
             $table->integer('total');
             $table->date('date');

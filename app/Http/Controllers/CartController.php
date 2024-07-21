@@ -54,7 +54,6 @@ class CartController extends Controller
 
         return response()->json($cart);
     }
-
     public function getCartItems(Cart $cart): JsonResponse
     {
         $items = json_decode($cart->items, true);
