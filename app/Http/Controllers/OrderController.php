@@ -28,6 +28,12 @@ class OrderController extends Controller
         $deliveryFee = $this->calculateDeliveryFee($shippingAddress);
 
         if ($cart->promo_code_id) {
+            $promoCode = PromoCode::find($cart->promo_code_id);
+
+            if ($promoCode && $promoCode->expires_at && $promoCode->expires_at->isPast()) {
+                return response()->json(['error' => 'Promo code is expired'], 400);
+            }
+
             $totalAmount = $cart->total_after_discount ?? $cart->total;
         } else {
             $totalAmount = $cart->total;
@@ -55,7 +61,6 @@ class OrderController extends Controller
             'total_after_delivery' => $checkout->total_after_delivery,
         ]);
     }
-
     private function calculateDeliveryFee(ShippingAddress $shippingAddress): float
     {
         $totalFee = 0;

@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Promocode extends Model
 {
     use HasFactory;
-
+    protected $casts = [
+        'expires_at' => 'datetime',
+    ];
     protected $table = 'promo_codes';
 
 }
